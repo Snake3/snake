@@ -26,9 +26,9 @@ bool GameHelp::init()
 
 	ccColor3B color = ccc3(0, 0, 0);
 	//创建帮助文字 
-	auto labelHelp = CCLabelTTF::create("W,A,S,D to Control!", "宋体", 24); 
+	auto labelHelp = CCLabelTTF::create("Mouse Click and Move", "宋体", 24); 
 	labelHelp->setColor(color);
-	labelHelp->setPosition(CCPoint(220,160)); 
+	labelHelp->setPosition(CCPoint(210,160)); 
 	this->addChild(labelHelp); 
 
 	//创建返回按钮

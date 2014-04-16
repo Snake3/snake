@@ -27,9 +27,10 @@ bool Game::init()
 	this->addChild(bg);
 
 	//精灵蛇
-	CCSprite* snake = CCSprite::create("p7.png");
+	snake = CCSprite::create("p7.png");
 	snake->setPosition(ccp(142,46));
 	this->addChild(snake);
+	setTouchEnabled(true);
 
 	CCSize size = CCDirector::sharedDirector()->getWinSize();
 
@@ -67,4 +68,16 @@ void Game::responseFunc(CCObject* obj)
 	//CCAction* move = CCMoveTo::create(2.0f,ccp(100,20));
 	//pSprite->runAction(move);
 
+}
+
+void Game::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent)
+{
+	//获取触点指针容器中第一个元素
+    CCSetIterator it = pTouches->begin();
+	//将其转化为触点信息
+    CCTouch* touch = (CCTouch*)(*it);
+	//取得触点位置
+	CCPoint touchLocation = touch->getLocation();  
+	//设置精灵位置为触点位置。
+	 snake->setPosition(touchLocation);
 }

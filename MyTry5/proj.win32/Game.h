@@ -23,6 +23,9 @@ public:
 
     // implement the "static node()" method manually
     CREATE_FUNC(Game);
+	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+private:
+	cocos2d::CCSprite *snake;
 };
 
 #endif  // __HELLOWORLD_SCENE_H__
