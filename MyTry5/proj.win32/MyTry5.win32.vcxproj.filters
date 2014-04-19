@@ -48,6 +48,27 @@
     <None Include="..\Resources\grid5.jpg">
       <Filter>resource</Filter>
     </None>
+    <None Include="C:\Users\WGC\Desktop\p8.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\Projectile.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="C:\Users\WGC\Desktop\Up.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="C:\Users\WGC\Desktop\Right.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="C:\Users\WGC\Desktop\Left.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="C:\Users\WGC\Desktop\Down.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="C:\Users\WGC\Desktop\p9.png">
+      <Filter>resource</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyTry5.rc">
