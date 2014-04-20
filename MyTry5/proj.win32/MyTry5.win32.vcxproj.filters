@@ -48,9 +48,6 @@
     <None Include="..\Resources\grid5.jpg">
       <Filter>resource</Filter>
     </None>
-    <None Include="C:\Users\WGC\Desktop\p8.png">
-      <Filter>resource</Filter>
-    </None>
     <None Include="..\Resources\Projectile.png">
       <Filter>resource</Filter>
     </None>
@@ -67,6 +64,9 @@
       <Filter>resource</Filter>
     </None>
     <None Include="C:\Users\WGC\Desktop\p9.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="E:\个人\聊天记录\577915246\FileRecv\Resources\p8.png">
       <Filter>resource</Filter>
     </None>
   </ItemGroup>

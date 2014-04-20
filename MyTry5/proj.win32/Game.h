@@ -5,13 +5,28 @@
 #include "Box2D/Box2D.h"
 #include "SimpleAudioEngine.h"
 
-/*
-enum snake3Position
+//枚举
+typedef enum {  
+	UP=1,  
+	DOWN=2,  
+	LEFT=3,  
+	RIGHT=4  
+}DIR_DEF;
+
+//蛇的节点
+class SnakeNode
 {
-	X = 80,
-	Y = 16
+public:  
+	int row;//第几行  
+	int col;//第几列  
+	int dir;//方向  
+	SnakeNode()
+	{
+		row = rand()%10;  //0~9
+		col = rand()%10;
+		dir=1;//方向上
+	}
 };
-*/
 
 class Game : public cocos2d::CCLayer
 {
@@ -29,27 +44,31 @@ public:
 
     // implement the "static node()" method manually
     CREATE_FUNC(Game);
-	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	//virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	void myDefine(CCNode* who);
 	void pauseGame(CCObject* sender);
 	void createTarget();
-	void gameLogic(float dt);
-	void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
-	~Game();
-	void update(float delta) /* delta = 1.0 / fps */;
+	void myGameLogic(float dt);
+	//void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	//void update(float delta) /* delta = 1.0 / fps */;
+	//~Game();
 	void setDirection(CCObject* obj);
+	//显示蛇的函数
+	void draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFood);
 
+	//计算出蛇下个位置所以节点的坐标
+	void gameLogic(int direction);
 	//方向控制函数
-	void runUp(float dt);
-	void runUpMain();
-	void runDown(float dt);
-	void runDownMain();
-	void runLeft(float dt);
-	void runLeftMain();
-	void runRight(float dt);
-	void runRightMain();
-private:
-	cocos2d::CCSprite *snake;
+	//void runUp(float dt);
+	//void runUpMain();
+	//void runDown(float dt);
+	//void runDownMain();
+	//void runLeft(float dt);
+	//void runLeftMain();
+	//void runRight(float dt);
+	//void runRightMain();
+//private:
+	//cocos2d::CCSprite *snake;
 
 	// array 插入 删除效率低 ；查找、遍历效率高 
 	// list     插入 删除效率高；查找、遍历效率 低
@@ -58,8 +77,12 @@ private:
 	// 选用array
 
 	//怪物集合和飞镖集合
-	cocos2d::CCArray* _snake2s;
-	cocos2d::CCArray* _projs;
+	//cocos2d::CCArray* _snake2s;
+	//cocos2d::CCArray* _projs;
+//protected:
+	//SnakeNode *sBody;  //贪食蛇
+	//cocos2d::CCArray* allBody;//蛇的身体
+
 };
 
-#endif  // __HELLOWORLD_SCENE_H__
+#endif  // __HELLOWORLD_SCENE_H_

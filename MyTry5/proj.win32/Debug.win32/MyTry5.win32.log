@@ -1,10 +1,30 @@
-﻿生成启动时间为 2014/4/19 14:37:28。
+﻿生成启动时间为 2014/4/21 0:45:38。
      1>项目“F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug.win32\MyTry5.win32.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I..\Classes /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\kazmath\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32\OGLES" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\external" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt Game.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I..\Classes /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\kazmath\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32\OGLES" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\external" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\HelloWorldScene.cpp Game.cpp
          Game.cpp
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(195): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(198): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(201): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(204): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(283): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(291): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(299): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(307): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(375): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(380): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(415): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(419): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(423): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(427): warning C4482: 使用了非标准扩展: 限定名中使用了枚举“DIR_DEF”
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(466): warning C4018: “<”: 有符号/无符号不匹配
+     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(475): warning C4018: “<”: 有符号/无符号不匹配
+         正在生成代码...
+         正在编译...
+         HelloWorldScene.cpp
+         正在生成代码...
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
@@ -30,4 +50,4 @@
 
 生成成功。
 
-已用时间 00:00:03.70
+已用时间 00:00:07.37

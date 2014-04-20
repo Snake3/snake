@@ -3,8 +3,13 @@
 
 using namespace cocos2d;
 
-float y = 16;
-float x = 80;
+float Y = 16;
+float X = 80;
+vector<SnakeNode*> allBody;
+vector<SnakeNode*> asnakeBody;
+SnakeNode *sFood = new SnakeNode();
+SnakeNode *sHead = new SnakeNode();
+SnakeNode *aHead= new SnakeNode();
 
 CCScene* Game::scene()
 {
@@ -29,12 +34,6 @@ bool Game::init()
 	bg->setPosition(ccp(161,160));
 	this->addChild(bg);
 
-	//精灵蛇
-	snake = CCSprite::create("p7.png");
-	snake->setPosition(ccp(16,144));
-	this->addChild(snake);
-	//setTouchEnabled(true);后面已经设置了
-
 	CCSize size = CCDirector::sharedDirector()->getWinSize();
 
 	//创建文字按钮 
@@ -49,87 +48,47 @@ bool Game::init()
 	CCMenuItemImage *pRightItem = CCMenuItemImage::create("Right.png","Right.png",this,menu_selector(Game::setDirection) );
 
 	auto uiTry = CCMenuItemLabel::create(labelResume, this, menu_selector(Game::responseFunc)); 
-    uiTry->setTag(1); 
+    uiTry->setTag(11); 
 	uiTry->setPosition(ccp(size.width-90,250)); 
       
     auto uiPause = CCMenuItemLabel::create(labelPause, this, menu_selector(Game::responseFunc)); 
-    uiPause->setTag(2); 
+    uiPause->setTag(12); 
     uiPause->setPosition(ccp(size.width-90,230)); 
       
     auto uiBack = CCMenuItemLabel::create(labelBack, this, menu_selector(Game::menuCloseCallback)); 
-    uiBack->setTag(3); 
+    uiBack->setTag(13); 
     uiBack->setPosition(ccp(size.width-90,210)); 	
       
-	pUpItem->setTag(4);
+	pUpItem->setTag(1);
 	pUpItem->setPosition(ccp(size.width-80,150)); 
 	
-	pDownItem->setTag(5);
+	pDownItem->setTag(2);
 	pDownItem->setPosition(ccp(size.width-80,70)); 
 
-	pLeftItem->setTag(6);
+	pLeftItem->setTag(3);
 	pLeftItem->setPosition(ccp(size.width-120,110)); 
 
-	pRightItem->setTag(7);
+	pRightItem->setTag(4);
 	pRightItem->setPosition(ccp(size.width-40,110)); 
 
     auto menu = CCMenu::create(uiTry,uiPause,uiBack,pUpItem,pDownItem,pLeftItem,pRightItem, NULL); 
     menu->setPosition(CCPointZero); 
     this->addChild(menu); 
 	
-	this->schedule(schedule_selector(Game::gameLogic),2);
-	this->schedule(schedule_selector(Game::update));
+	this->schedule(schedule_selector(Game::myGameLogic),1);
+	//this->schedule(schedule_selector(Game::gameLogic),1);
+	//this->schedule(schedule_selector(Game::update));
 
-	this->setTouchEnabled(true);
+	//this->setTouchEnabled(true);
 
 	//集合初始化
-	_projs = new CCArray;
-	_snake2s = new CCArray;
+	//_projs = new CCArray;
+	//_snake2s = new CCArray;
 
 	//Class::create 不需要手动释放
 	//new:需要手动释放
 
     return true;
-}
-
-void Game::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent) // 触摸事件响应函数
-{
-	//pTouches是触摸点
-	CCTouch* touch = (CCTouch*)pTouches->anyObject();
-	//得到UI坐标系下的位置,(0,0)在左上角
-	CCPoint locInView = touch->getLocationInView();
-	//转化为cocos2d的坐标系,(0,0)在左下角
-	CCPoint loc = CCDirector::sharedDirector()->convertToGL(locInView); //从UI坐标变换到cococs2d中的坐标
-
-	if(loc.x <= 20)// 触摸点在出发点左侧不处理
-	{
-		return;
-	}
-
-	CCSize screenSize = CCDirector::sharedDirector()->getVisibleSize();
-
-	CCSprite* proj = CCSprite::create("Projectile.png");
-	proj->setPosition(ccp(20, screenSize.height/2.0));
-	this->addChild(proj);//创建飞镖精灵
-	//加到界面的同时也加到集合上来
-	_projs->addObject(proj);
-	proj->setTag(2);
-
-	//计算距离,相似三角形推导得出
-	double dx = loc.x - 20;
-	double dy = loc.y - screenSize.height / 2.0;
-	double d = sqrt(dx * dx + dy * dy);// 触摸点到出发点的距离
-
-	//D是屏幕尺寸，这里是：D=根号（480*480+320*320）
-	double D = sqrt(screenSize.width * screenSize.width + screenSize.height * screenSize.height);// 总的运行距离
-
-	double ratio = D / d;
-	double endx = ratio * dx + 20;// 最终点的x坐标
-	double endy = ratio * dy + screenSize.height / 2.0;// 最终点的y坐标
-
-	CCMoveTo* move = CCMoveTo::create(D/320, ccp(endx,endy));
-	CCCallFuncN* moveFinish = CCCallFuncN::create(this, callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(move, moveFinish,NULL);
-	proj->runAction(actions);
 }
 
 void Game::menuCloseCallback(CCObject* pSender)
@@ -138,63 +97,19 @@ void Game::menuCloseCallback(CCObject* pSender)
 	CCDirector::sharedDirector()->replaceScene(HelloWorld::scene());
 }
 
+//进入游戏后的菜单响应
 void Game::responseFunc(CCObject* obj)
 {	
-	CCMoveTo* move = CCMoveTo::create(1.0f,ccp(280,280));
-
-	//float x = 48;
-	//CCDelayTime* delay = CCDelayTime::create(3.5f);
-	//CCSequence* actions = CCSequence::create(move,delay,NULL);
-	
-	//float y = 145;
-	//float x = 20;
-
-	#if 0
-	//运动后消失动作
-	///////////////第一种方式/////////////
-	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(move, disappear, NULL);
-	snake->runAction(actions);
-
-	///////////////第二种方式/////////////
-	///////这种方式点击两次菜单不报错////////
-	CCFiniteTimeAction* hideAction = CCHide::create(); 
-	CCAction* actions = CCSequence::create(move, hideAction, NULL);
-	snake->runAction(actions);
-
-	//位置变化后运动
-	//要先注释后面case1的动作
-	CCJumpTo* jump = CCJumpTo::create(2.0f,ccp(280,280),180,3);
-	CCFiniteTimeAction* placeAction = CCPlace::create(ccp(50, 10));   
-	CCAction* action = CCSequence::create(placeAction, jump, NULL);
-	snake->runAction(action);
-	#endif	
-
 	int i = dynamic_cast<CCMenuItemLabel*>(obj)->getTag();
 	switch (i) 
 	{ 
-	case 1: 
+	case 11: 
 		CCDirector::sharedDirector() ->resume();
-		snake->runAction(move);
-		
-		#if 0
-		if(snake->getPositionX() <= 304)
-		{
-			//snake->removeFromParentAndCleanup(true);
-			snake->setPosition(ccp(x,145));
-			//CCSequence* actions = CCSequence::create(move,delay,NULL);
-			x += 32;
-			this->addChild(snake);
-			//y += 32;
-			//snake->runAction(delay);
-		}
-		#endif
-		
 		break; 
-	case 2: 
+	case 12: 
 		pauseGame(obj);
 		break; 
-	case 3: 
+	case 13: 
 		CCDirector::sharedDirector()->end();
 		break;
 	default: 
@@ -202,13 +117,13 @@ void Game::responseFunc(CCObject* obj)
 	} 
 }
 
+//游戏暂停
 void Game::pauseGame(CCObject* sender)    
 {    
 	CCDirector::sharedDirector() ->pause();     
-	//resumeGameItem->setIsVisible(true);    
-	//pauseGameItem ->setIsVisible(false);    
 }    
 
+//清除、消失的函数
 void Game::myDefine(CCNode* who)
 {
 	//who->setPosition(ccp(0,0));
@@ -217,6 +132,7 @@ void Game::myDefine(CCNode* who)
 	//从图层中删去
 	who->removeFromParentAndCleanup(true);
 
+	/*
 	int tag = who->getTag();
 
 	if(1==tag)
@@ -227,250 +143,341 @@ void Game::myDefine(CCNode* who)
 	{
 		_projs->removeObject(who);
 	}
+	*/
 }
 
-void Game::ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent)
-{
-	//获取触点指针容器中第一个元素
-    CCSetIterator it = pTouches->begin();
-	//将其转化为触点信息
-    CCTouch* touch = (CCTouch*)(*it);
-	//取得触点位置
-	CCPoint touchLocation = touch->getLocation();  
-	//设置精灵位置为触点位置。
-	 snake->setPosition(touchLocation);
-}
-
+#if 0
+//食物随机出现
 void Game::createTarget()
 {
-	//第二条精灵蛇
-	CCSprite* snake2 = CCSprite::create("p8.png");
+	//食物
+	CCSprite* food = CCSprite::create("p8.png");
 
-	CCSize screenSize = CCDirector::sharedDirector()->getVisibleSize();
-	int y = rand()%(int)(screenSize.height);
+	//CCSize screenSize = CCDirector::sharedDirector()->getVisibleSize();
+	int y = rand()%(9);
+	y = y * 32 + 16;
+	int x = rand()%(9);
+	x = x * 32 + 16;
+	food->setPosition(ccp(x,y));
+	this->addChild(food);
 
-	snake2->setPosition(ccp(screenSize.width-20,y));
-	this->addChild(snake2);
+	CCDelayTime* delay = CCDelayTime::create(1);
+	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
+	CCAction* actions = CCSequence::create(delay, disappear, NULL);
+	food->runAction(actions);
+
+	
 	//加到界面的同时也加到集合上来
 	_snake2s->addObject(snake2);
 	snake2->setTag(1);
-
+	
 	CCMoveTo* move = CCMoveTo::create(2,ccp(0,y));
 	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
 	CCAction* actions = CCSequence::create(move, disappear, NULL);
 	snake2->runAction(actions);
+	
 
 }
-
-void Game::gameLogic(float dt)
+#endif
+void Game::myGameLogic(float dt)
 {
-	this->createTarget();
+	this->gameLogic(sHead->dir);
 }
 
-Game::~Game()
-{
-	if(_projs != NULL)
-	{
-		_projs->release();
-	}
-
-	if(_snake2s != NULL)
-	{
-		_snake2s->release();
-	}
-}
-
-//飞镖集合和怪物集合的碰撞检测
-void Game::update(float delta) // delta = 1.0 / fps
-{
-	CCArray* targetToDelete = new CCArray;
-	CCArray* projToDelete = new CCArray;
-	CCObject* itarget;
-	CCObject* iproj;
-	CCARRAY_FOREACH(_snake2s, itarget){
-		CCSprite* target = (CCSprite*)itarget;
-
-		CCRect targetZone = CCRectMake(target->getPositionX(),
-			target->getPositionY(),
-			target->getContentSize().width,
-			target->getContentSize().height);
-
-		CCARRAY_FOREACH(_projs, iproj){
-			CCSprite* proj = (CCSprite*)iproj;
-			CCRect projZone = CCRectMake(proj->getPositionX(),
-				proj->getPositionY(),
-				proj->getContentSize().width,
-				proj->getContentSize().height);
-
-			if (projZone.intersectsRect(targetZone)){
-				projToDelete->addObject(iproj);
-				targetToDelete->addObject(itarget);
-			}
-		} // end of iterate projectile
-
-
-	} // end of iterate target
-
-	CCARRAY_FOREACH(projToDelete, iproj){
-		_projs->removeObject(iproj);
-		CCSprite* proj = (CCSprite*)iproj;
-		proj->removeFromParentAndCleanup(true);
-	}
-
-	CCARRAY_FOREACH(targetToDelete, itarget){
-		_snake2s->removeObject(itarget);
-		CCSprite* target = (CCSprite*)itarget;
-		target->removeFromParentAndCleanup(true);
-	}
-
-	targetToDelete->release();
-	projToDelete->release();
-}
 
 void Game::setDirection(CCObject* obj)
 {
+
 	//this->schedule(schedule_selector(Game::run),1);
 	int i = dynamic_cast<CCMenuItemImage*>(obj)->getTag();
 	switch (i) 
 	{ 
-	case 4: //Up
-		//先删除其他定时器
-		this->unschedule(schedule_selector(Game::runDown));
-		this->unschedule(schedule_selector(Game::runLeft));
-		this->unschedule(schedule_selector(Game::runRight));
-		this->schedule(schedule_selector(Game::runUp),1);
+	case DIR_DEF::UP:
+		this->gameLogic(1);
 		break; 
-	case 5: //Down
-		this->unschedule(schedule_selector(Game::runUp));
-		this->unschedule(schedule_selector(Game::runLeft));
-		this->unschedule(schedule_selector(Game::runRight));
-		this->schedule(schedule_selector(Game::runDown),1);
+	case DIR_DEF::DOWN:
+		this->gameLogic(2);
 		break; 
-	case 6: //Left
-		this->unschedule(schedule_selector(Game::runDown));
-		this->unschedule(schedule_selector(Game::runUp));
-		this->unschedule(schedule_selector(Game::runRight));
-		this->schedule(schedule_selector(Game::runLeft),1);
+	case DIR_DEF::LEFT:
+		this->gameLogic(3);
 		break;
-	case 7: //Right
-		this->unschedule(schedule_selector(Game::runDown));
-		this->unschedule(schedule_selector(Game::runLeft));
-		this->unschedule(schedule_selector(Game::runUp));
-		this->schedule(schedule_selector(Game::runRight),1);
+	case DIR_DEF::RIGHT:
+		this->gameLogic(4);
 		break;
 	default: 
 		break; 
 	} 
+
 }
 
-//方向上的循环
-void Game::runUp(float dt)
-{
-	this->runUpMain();
-}
 
-void Game::runUpMain()
-{
-	//真正意义上的贪吃蛇
-	CCSprite* snake3 = CCSprite::create("p9.png");
-	//snake3->setPosition(ccp(80,144));
-	
-	snake3->setPosition(ccp(x,y));
-	y += 32;
+//计算出蛇下个位置每个节点的坐标  
+void Game::gameLogic(int direction)  
+{     
 
-	//判断撞墙结束
-	if(snake3->getPositionY() > 304)
-	{
-		CCDirector::sharedDirector()->end();
+	sHead->dir = direction;
+	//移动蛇的身体,不包括蛇头  
+	for(int i = allBody.size()-1; i>=0; i--)  
+	{   
+		//sn为指向allBody元素的指针，通过sn可更改allBody元素的值，即跟新到下个位置
+		//获取蛇身体上的某个节点
+		SnakeNode * sn = (SnakeNode *)allBody.at(i);  
+
+		//把蛇身体前面的节点赋值给后面的节点，实现蛇节点向前移动一个位置
+		if(i>0)   
+		{   
+			//如果该节点不是第一个节点,那么该节点的下一个坐标就是其前一个点的坐标（这里不用多解释，玩过蛇的都懂）  
+			SnakeNode * snpre = (SnakeNode *)allBody.at(i-1);  
+
+			//更改行列和方向
+			
+			sn->dir = snpre->dir;  
+			sn->row = snpre->row;  
+			sn->col = snpre->col;  
+		}  
+
+
+		//把蛇头的位置赋值给紧接在蛇头后面节点
+		else if(i==0)  
+		{  
+			//如果i=0则是第一个节点，蛇头的坐标便是该节点的坐标  
+			sn->dir = sHead->dir;  
+			sn->row = sHead->row;  
+			sn->col = sHead->col;  
+		}  
+	}  
+
+	//移动蛇的身体,不包括蛇头  
+	for(int i = asnakeBody.size()-1; i>=0; i--)  
+	{   
+		//sn为指向allBody元素的指针，通过sn可更改allBody元素的值，即跟新到下个位置
+		//获取蛇身体上的某个节点
+		SnakeNode * sn = (SnakeNode *)asnakeBody.at(i);  
+
+		//把蛇身体前面的节点赋值给后面的节点，实现蛇节点向前移动一个位置
+		if(i>0)   
+		{   
+			//如果该节点不是第一个节点,那么该节点的下一个坐标就是其前一个点的坐标（这里不用多解释，玩过蛇的都懂）  
+			SnakeNode * snpre = (SnakeNode *)asnakeBody.at(i-1);  
+
+			//更改行列和方向
+			sn->dir = snpre->dir;  
+			sn->row = snpre->row;  
+			sn->col = snpre->col;  
+		}  
+
+
+		//把蛇头的位置赋值给紧接在蛇头后面节点
+		else if(i==0)  
+		{  
+			//如果i=0则是第一个节点，蛇头的坐标便是该节点的坐标  
+			sn->dir = aHead->dir;  
+			sn->row = aHead->row;  
+			sn->col = aHead->col;  
+		}  
 	}
 
-	this->addChild(snake3);
-	CCDelayTime* delay = CCDelayTime::create(1);
-	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(delay, disappear, NULL);
-	snake3->runAction(actions);
-}
+	//根据sHead的值，判断蛇头移动的方向，从而计算出蛇头下个位置的坐标以及移动方向
+	switch(sHead->dir)  
+	{  
+	case DIR_DEF::UP:  
+		sHead->col++;//上移  
+		if(sHead->col >= 10)  
+		{  
+			//sHead->col=0;//超过顶部边界后便从底部出来  
+			CCDirector::sharedDirector()->end();
+		}  
+		break;  
+	case DIR_DEF::DOWN:  
+		sHead->col--;  
+		if(sHead->col < 0)  
+		{  
+			//sHead->col=9;  
+			CCDirector::sharedDirector()->end();
+		}  
+		break;  
+	case DIR_DEF::LEFT:  
+		sHead->row--;  
+		if(sHead->row < 0)  
+		{  
+			//sHead->row=9;  
+			CCDirector::sharedDirector()->end();
+		}  
+		break;  
+	case DIR_DEF::RIGHT:  
+		sHead->row++;  
+		if(sHead->row >= 10)  
+		{  
+			//sHead->row=0;  
+			CCDirector::sharedDirector()->end();
+		}  
+		break;  
+	}   
 
-//方向下的循环
-void Game::runDown(float dt)
-{
-	this->runDownMain();
-}
-
-void Game::runDownMain()
-{
-	//真正意义上的贪吃蛇
-	CCSprite* snake3 = CCSprite::create("p9.png");
-	//snake3->setPosition(ccp(80,144));
-
-	snake3->setPosition(ccp(x,y));
-	y -= 32;
-
-	//判断撞墙结束
-	if(snake3->getPositionY() < 16)
+	//火星蛇头的移动方向,曼哈顿距离,左右移动优先，bug：穿过蛇身体
+	if ((aHead->row)!=(sFood->row))
+	{ 
+		if(sFood->row < aHead->row)
+		{	//食物在蛇头左边
+			aHead->row--;
+			aHead->dir=LEFT;
+		}
+		else if(sFood->row > aHead->row)
+		{	//食物在蛇头右边
+			aHead->row++;
+			aHead->dir=RIGHT;
+		}
+	}  
+	else if ((aHead->col!=sFood->col))
 	{
-		CCDirector::sharedDirector()->end();
+		if(sFood->col < aHead->col)
+		{	//食物在蛇头下方
+			aHead->col--;
+			aHead->dir=DOWN;
+		}
+		if(sFood->col > aHead->col)
+		{	//食物在蛇头上方
+			aHead->col++;
+			aHead->dir=UP;
+		} 
+	}  
+
+
+
+	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
+	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
+	if(sHead->row == sFood->row && sHead->col == sFood->col) 
+	{   
+		//食物从当前位置消失，随机出现在下一个坐标  
+		sFood->row = rand()%10;  
+		sFood->col = rand()%10;  
+
+
+		//添加身体到集合  
+		SnakeNode * sn = new SnakeNode();//创建一个新的节点（也就是吃掉的那个食物），将其放到蛇的尾巴上  
+		SnakeNode * lastNode = NULL;  
+		//获取蛇的最后一个节点，如果allBody的size()为0，则说明蛇是第一次捕食，那么它的最后一个节点也就是蛇头啦。  
+		if(allBody.size()>0)  
+			lastNode = (SnakeNode *)allBody.back();  
+		else  
+			lastNode = sHead;//最后一个节点是蛇头  
+
+
+		//通过最后一个节点的方向来个新的节点初始化横、列坐标  
+		switch(lastNode->dir)  
+		{  
+#if 0
+		case DIR_DEF::UP:  
+			sn->row = lastNode->row-1;  
+			sn->col = lastNode->col;  
+			break;  
+#endif
+		case DIR_DEF::DOWN:  
+			sn->row = lastNode->row;  
+			sn->col = lastNode->col-1;  
+			break;  
+
+		case DIR_DEF::LEFT:  
+			sn->row = lastNode->row-1;  
+			sn->col = lastNode->col;  
+			break;  
+#if 0
+		case DIR_DEF::RIGHT:  
+			sn->row=lastNode->row;  
+			sn->col=lastNode->col-1;  
+			break;  
+#endif
+		}  
+		allBody.push_back(sn);//将新的节点加入到蛇的身体中。  
+	}  
+
+	//火星蛇的碰撞检测
+	if(aHead->row==sFood->row&&aHead->col==sFood->col)
+	{
+		//食物从当前位置消失，随机出现在下一个坐标  
+		sFood->row = rand()%10;  
+		sFood->col = rand()%10;  
+
+
+		//添加身体到集合  
+		SnakeNode * sn = new SnakeNode();//创建一个新的节点（也就是吃掉的那个食物），将其放到蛇的尾巴上  
+		SnakeNode * lastNode = NULL;  
+		//获取蛇的最后一个节点，如果allBody的size()为0，则说明蛇是第一次捕食，那么它的最后一个节点也就是蛇头啦。  
+		if(allBody.size()>0)  
+			lastNode = (SnakeNode *)asnakeBody.back();  
+		else  
+			lastNode = aHead;//最后一个节点是蛇头  
+
+
+		//通过最后一个节点的方向来个新的节点初始化横、列坐标  
+		switch(lastNode->dir)  
+		{  
+		case DIR_DEF::UP:  
+			sn->row = lastNode->row-1;  
+			sn->col = lastNode->col;  
+			break;  
+		case DIR_DEF::DOWN:  
+			sn->row = lastNode->row+1;  
+			sn->col = lastNode->col;  
+			break;  
+		case DIR_DEF::LEFT:  
+			sn->row = lastNode->row;  
+			sn->col = lastNode->col+1;  
+			break;  
+		case DIR_DEF::RIGHT:  
+			sn->row=lastNode->row;  
+			sn->col=lastNode->col-1;  
+			break;  
+		} 
+		asnakeBody.push_back(sn);//将新的节点加入到蛇的身体中
 	}
 
-	this->addChild(snake3);
-	CCDelayTime* delay = CCDelayTime::create(1);
+	this->draw(allBody,sHead,sFood);   
+
+}
+
+//显示蛇的节点
+void Game::draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFood)
+{
+	CCFiniteTimeAction * delay = CCDelayTime::create(1.0f);
 	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(delay, disappear, NULL);
-	snake3->runAction(actions);
-}
+	CCAction *seq = CCSequence::create(delay,disappear,NULL);
+	CCAction *disahead = CCSequence::create(delay,disappear,NULL);
 
-//方向左的循环
-void Game::runLeft(float dt)
-{
-	this->runLeftMain();
-}
+	//绘制蛇头  
+	CCSprite *head=CCSprite::create("p9.png");
+	//火星蛇头
+	CCSprite *ahead=CCSprite::create("p7.png");
+	head->setPosition(ccp(sHead->row*32+16,sHead->col*32+16));
+	ahead->setPosition(ccp(aHead->row*32+16,aHead->col*32+16));
+	this->addChild(head);
+	this->addChild(ahead);
+	head->runAction(seq);
+	ahead->runAction(disahead);
 
-void Game::runLeftMain()
-{
-	//真正意义上的贪吃蛇
-	CCSprite* snake3 = CCSprite::create("p9.png");
-	//snake3->setPosition(ccp(80,144));
+	//绘制食物  
+	CCAction *disFood=CCSequence::create(delay,disappear,NULL);
+	CCSprite *food=CCSprite::create("p8.png");
+	food->setPosition(ccp(sFood->row*32+16,sFood->col*32+16));
+	this->addChild(food);
+	food->runAction(disFood);
 
-	snake3->setPosition(ccp(x,y));
-	x -= 32;
+	//绘制身体  
+	for(int i=0;i<allBody.size();i++)  
+	{  
+		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
+		CCSprite *body=CCSprite::create("p9.png");
+		body->setPosition(ccp(allBody[i]->row*32+16,allBody[i]->col*32+16));
+		this->addChild(body);
+		body->runAction(disBody);
+	}  
 
-	//判断撞墙结束
-	if(snake3->getPositionX() < 16)
-	{
-		CCDirector::sharedDirector()->end();
+	for(int i=0;i<asnakeBody.size();i++)  
+	{  
+		CCAction *disaBody=CCSequence::create(delay,disappear,NULL);
+		CCSprite *abody=CCSprite::create("p7.png");
+		abody->setPosition(ccp(asnakeBody[i]->row*32+16,asnakeBody[i]->col*32+16));
+		this->addChild(abody);
+		abody->runAction(disaBody);
 	}
-
-	this->addChild(snake3);
-	CCDelayTime* delay = CCDelayTime::create(1);
-	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(delay, disappear, NULL);
-	snake3->runAction(actions);
-}
-
-//方向右的循环
-void Game::runRight(float dt)
-{
-	this->runRightMain();
-}
-
-void Game::runRightMain()
-{
-	//真正意义上的贪吃蛇
-	CCSprite* snake3 = CCSprite::create("p9.png");
-	//snake3->setPosition(ccp(80,144));
-
-	snake3->setPosition(ccp(x,y));
-	x += 32;
-
-	//判断撞墙结束
-	if(snake3->getPositionX() > 304)
-	{
-		CCDirector::sharedDirector()->end();
-	}
-
-	this->addChild(snake3);
-	CCDelayTime* delay = CCDelayTime::create(1);
-	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(delay, disappear, NULL);
-	snake3->runAction(actions);
 }
