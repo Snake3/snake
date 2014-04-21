@@ -48,7 +48,7 @@ public:
 	void myDefine(CCNode* who);
 	void pauseGame(CCObject* sender);
 	void createTarget();
-	void myGameLogic(float dt);
+	//void myGameLogic(float dt);
 	//void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
 	//void update(float delta) /* delta = 1.0 / fps */;
 	//~Game();
@@ -57,7 +57,7 @@ public:
 	void draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFood);
 
 	//计算出蛇下个位置所以节点的坐标
-	void gameLogic(int direction);
+	void gameLogic(float dt);
 	//方向控制函数
 	//void runUp(float dt);
 	//void runUpMain();

@@ -3,8 +3,7 @@
 
 using namespace cocos2d;
 
-float Y = 16;
-float X = 80;
+int direction = 1;
 vector<SnakeNode*> allBody;
 vector<SnakeNode*> asnakeBody;
 SnakeNode *sFood = new SnakeNode();
@@ -75,25 +74,15 @@ bool Game::init()
     menu->setPosition(CCPointZero); 
     this->addChild(menu); 
 	
-	this->schedule(schedule_selector(Game::myGameLogic),1);
-	//this->schedule(schedule_selector(Game::gameLogic),1);
-	//this->schedule(schedule_selector(Game::update));
-
-	//this->setTouchEnabled(true);
-
-	//集合初始化
-	//_projs = new CCArray;
-	//_snake2s = new CCArray;
-
-	//Class::create 不需要手动释放
-	//new:需要手动释放
-
+	//this->schedule(schedule_selector(Game::myGameLogic),1);
+	this->schedule(schedule_selector(Game::gameLogic),1);
+	
     return true;
 }
 
 void Game::menuCloseCallback(CCObject* pSender)
 {
-	CCDirector::sharedDirector() ->resume();
+	CCDirector::sharedDirector() ->pause();
 	CCDirector::sharedDirector()->replaceScene(HelloWorld::scene());
 }
 
@@ -146,45 +135,6 @@ void Game::myDefine(CCNode* who)
 	*/
 }
 
-#if 0
-//食物随机出现
-void Game::createTarget()
-{
-	//食物
-	CCSprite* food = CCSprite::create("p8.png");
-
-	//CCSize screenSize = CCDirector::sharedDirector()->getVisibleSize();
-	int y = rand()%(9);
-	y = y * 32 + 16;
-	int x = rand()%(9);
-	x = x * 32 + 16;
-	food->setPosition(ccp(x,y));
-	this->addChild(food);
-
-	CCDelayTime* delay = CCDelayTime::create(1);
-	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(delay, disappear, NULL);
-	food->runAction(actions);
-
-	
-	//加到界面的同时也加到集合上来
-	_snake2s->addObject(snake2);
-	snake2->setTag(1);
-	
-	CCMoveTo* move = CCMoveTo::create(2,ccp(0,y));
-	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
-	CCAction* actions = CCSequence::create(move, disappear, NULL);
-	snake2->runAction(actions);
-	
-
-}
-#endif
-void Game::myGameLogic(float dt)
-{
-	this->gameLogic(sHead->dir);
-}
-
-
 void Game::setDirection(CCObject* obj)
 {
 
@@ -192,17 +142,38 @@ void Game::setDirection(CCObject* obj)
 	int i = dynamic_cast<CCMenuItemImage*>(obj)->getTag();
 	switch (i) 
 	{ 
-	case DIR_DEF::UP:
-		this->gameLogic(1);
+	case UP:
+		if((sHead->dir != UP) && (sHead->dir != DOWN))
+		{
+			//方向切换会闪是因为这个原因
+			this->unscheduleAllSelectors();
+			direction = UP;
+			this->schedule(schedule_selector(Game::gameLogic),1);
+		}
 		break; 
-	case DIR_DEF::DOWN:
-		this->gameLogic(2);
+	case DOWN:
+		if((sHead->dir != DOWN) && (sHead->dir != UP))
+		{
+			this->unscheduleAllSelectors();
+			direction = DOWN;
+			this->schedule(schedule_selector(Game::gameLogic),1);
+		}
 		break; 
-	case DIR_DEF::LEFT:
-		this->gameLogic(3);
+	case LEFT:
+		if((sHead->dir != LEFT) && (sHead->dir != RIGHT))
+		{
+			this->unscheduleAllSelectors();
+			direction = LEFT;
+			this->schedule(schedule_selector(Game::gameLogic),1);
+		}
 		break;
-	case DIR_DEF::RIGHT:
-		this->gameLogic(4);
+	case RIGHT:
+		if((sHead->dir != RIGHT) && (sHead->dir != LEFT))
+		{
+			this->unscheduleAllSelectors();
+			direction = RIGHT;
+			this->schedule(schedule_selector(Game::gameLogic),1);
+		}
 		break;
 	default: 
 		break; 
@@ -212,7 +183,7 @@ void Game::setDirection(CCObject* obj)
 
 
 //计算出蛇下个位置每个节点的坐标  
-void Game::gameLogic(int direction)  
+void Game::gameLogic(float dt)  
 {     
 
 	sHead->dir = direction;
@@ -280,7 +251,7 @@ void Game::gameLogic(int direction)
 	//根据sHead的值，判断蛇头移动的方向，从而计算出蛇头下个位置的坐标以及移动方向
 	switch(sHead->dir)  
 	{  
-	case DIR_DEF::UP:  
+	case UP:  
 		sHead->col++;//上移  
 		if(sHead->col >= 10)  
 		{  
@@ -288,7 +259,7 @@ void Game::gameLogic(int direction)
 			CCDirector::sharedDirector()->end();
 		}  
 		break;  
-	case DIR_DEF::DOWN:  
+	case DOWN:  
 		sHead->col--;  
 		if(sHead->col < 0)  
 		{  
@@ -296,7 +267,7 @@ void Game::gameLogic(int direction)
 			CCDirector::sharedDirector()->end();
 		}  
 		break;  
-	case DIR_DEF::LEFT:  
+	case LEFT:  
 		sHead->row--;  
 		if(sHead->row < 0)  
 		{  
@@ -304,7 +275,7 @@ void Game::gameLogic(int direction)
 			CCDirector::sharedDirector()->end();
 		}  
 		break;  
-	case DIR_DEF::RIGHT:  
+	case RIGHT:  
 		sHead->row++;  
 		if(sHead->row >= 10)  
 		{  
@@ -366,27 +337,27 @@ void Game::gameLogic(int direction)
 		//通过最后一个节点的方向来个新的节点初始化横、列坐标  
 		switch(lastNode->dir)  
 		{  
-#if 0
-		case DIR_DEF::UP:  
+
+		case UP:  
 			sn->row = lastNode->row-1;  
 			sn->col = lastNode->col;  
 			break;  
-#endif
-		case DIR_DEF::DOWN:  
+
+		case DOWN:  
 			sn->row = lastNode->row;  
 			sn->col = lastNode->col-1;  
 			break;  
 
-		case DIR_DEF::LEFT:  
+		case LEFT:  
 			sn->row = lastNode->row-1;  
 			sn->col = lastNode->col;  
 			break;  
-#if 0
-		case DIR_DEF::RIGHT:  
+
+		case RIGHT:  
 			sn->row=lastNode->row;  
 			sn->col=lastNode->col-1;  
 			break;  
-#endif
+
 		}  
 		allBody.push_back(sn);//将新的节点加入到蛇的身体中。  
 	}  
@@ -412,19 +383,19 @@ void Game::gameLogic(int direction)
 		//通过最后一个节点的方向来个新的节点初始化横、列坐标  
 		switch(lastNode->dir)  
 		{  
-		case DIR_DEF::UP:  
+		case UP:  
 			sn->row = lastNode->row-1;  
 			sn->col = lastNode->col;  
 			break;  
-		case DIR_DEF::DOWN:  
+		case DOWN:  
 			sn->row = lastNode->row+1;  
 			sn->col = lastNode->col;  
 			break;  
-		case DIR_DEF::LEFT:  
+		case LEFT:  
 			sn->row = lastNode->row;  
 			sn->col = lastNode->col+1;  
 			break;  
-		case DIR_DEF::RIGHT:  
+		case RIGHT:  
 			sn->row=lastNode->row;  
 			sn->col=lastNode->col-1;  
 			break;  
@@ -463,7 +434,7 @@ void Game::draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFoo
 	food->runAction(disFood);
 
 	//绘制身体  
-	for(int i=0;i<allBody.size();i++)  
+	for(unsigned int i=0;i<allBody.size();i++)  
 	{  
 		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *body=CCSprite::create("p9.png");
@@ -472,7 +443,7 @@ void Game::draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFoo
 		body->runAction(disBody);
 	}  
 
-	for(int i=0;i<asnakeBody.size();i++)  
+	for(unsigned int i=0;i<asnakeBody.size();i++)  
 	{  
 		CCAction *disaBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *abody=CCSprite::create("p7.png");
