@@ -33,9 +33,6 @@
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\back.png">
       <Filter>resource</Filter>
     </None>
-    <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\Background.png">
-      <Filter>resource</Filter>
-    </None>
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\background1.jpg">
       <Filter>resource</Filter>
     </None>
@@ -69,6 +66,9 @@
     <None Include="E:\个人\聊天记录\577915246\FileRecv\Resources\p8.png">
       <Filter>resource</Filter>
     </None>
+    <None Include="D:\git_file\Snake5\MyTry5\Resources\Background.png">
+      <Filter>resource</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyTry5.rc">
@@ -94,6 +94,9 @@
     <ClInclude Include="Game.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="SpeedSelect.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -109,6 +112,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="SpeedSelect.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

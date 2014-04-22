@@ -1,10 +1,10 @@
-﻿生成启动时间为 2014/4/21 9:02:48。
+﻿生成启动时间为 2014/4/22 12:27:43。
      1>项目“F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug.win32\MyTry5.win32.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I..\Classes /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\kazmath\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32\OGLES" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\external" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt Game.cpp
-         Game.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I..\Classes /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\kazmath\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32\OGLES" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\external" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt SpeedSelect.cpp
+         SpeedSelect.cpp
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
@@ -17,6 +17,7 @@
          Debug.win32\HelloWorldScene.obj
          Debug.win32\Game.obj
          Debug.win32\main.obj
+         Debug.win32\SpeedSelect.obj
        Manifest:
          C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug.win32\MyTry5.win32.exe.embed.manifest" /manifest Debug.win32\MyTry5.win32.exe.intermediate.manifest
          所有输出均为最新。
@@ -30,4 +31,4 @@
 
 生成成功。
 
-已用时间 00:00:04.26
+已用时间 00:00:03.66

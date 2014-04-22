@@ -2,6 +2,7 @@
 //#include <stdio.h>
 #include "GameHelp.h"
 #include "Game.h"
+#include "SpeedSelect.h"
 
 using namespace cocos2d;
 
@@ -193,5 +194,5 @@ void HelloWorld::menuCloseCallback(CCObject* pSender)
 
 void HelloWorld::responseFunc(CCObject* obj)
 {
-	CCDirector::sharedDirector()->replaceScene(Game::scene()); 
+	CCDirector::sharedDirector()->replaceScene(SpeedSelect::scene()); 
 }

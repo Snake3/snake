@@ -58,6 +58,17 @@ public:
 
 	//计算出蛇下个位置所以节点的坐标
 	void gameLogic(float dt);
+
+	//游戏分块逻辑
+	void huoxingSnakeHeadMoveDirection();
+	void tanchiSnakeHeadMoveDirection();
+
+	void huoxingSnakeMoveBody();
+	void tanchiSnakeMoveBody();
+
+	void tanchiSnakeEat();
+	void huoxingSnakeEat();
+
 	//方向控制函数
 	//void runUp(float dt);
 	//void runUpMain();
@@ -82,7 +93,6 @@ public:
 //protected:
 	//SnakeNode *sBody;  //贪食蛇
 	//cocos2d::CCArray* allBody;//蛇的身体
-
 };
 
 #endif  // __HELLOWORLD_SCENE_H_
