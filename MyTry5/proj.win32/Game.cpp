@@ -150,7 +150,7 @@ void Game::setDirection(CCObject* obj)
 		if((sHead->dir != UP) && (sHead->dir != DOWN))
 		{
 			//方向切换会闪是因为这个原因
-			this->unscheduleAllSelectors();
+			//this->unscheduleAllSelectors();
 			direction = UP;
 			this->schedule(schedule_selector(Game::gameLogic),speed);
 		}
@@ -158,7 +158,7 @@ void Game::setDirection(CCObject* obj)
 	case DOWN:
 		if((sHead->dir != DOWN) && (sHead->dir != UP))
 		{
-			this->unscheduleAllSelectors();
+			//this->unscheduleAllSelectors();
 			direction = DOWN;
 			this->schedule(schedule_selector(Game::gameLogic),speed);
 		}
@@ -166,7 +166,7 @@ void Game::setDirection(CCObject* obj)
 	case LEFT:
 		if((sHead->dir != LEFT) && (sHead->dir != RIGHT))
 		{
-			this->unscheduleAllSelectors();
+			//this->unscheduleAllSelectors();
 			direction = LEFT;
 			this->schedule(schedule_selector(Game::gameLogic),speed);
 		}
@@ -174,7 +174,7 @@ void Game::setDirection(CCObject* obj)
 	case RIGHT:
 		if((sHead->dir != RIGHT) && (sHead->dir != LEFT))
 		{
-			this->unscheduleAllSelectors();
+			//this->unscheduleAllSelectors();
 			direction = RIGHT;
 			this->schedule(schedule_selector(Game::gameLogic),speed);
 		}
@@ -199,6 +199,17 @@ void Game::gameLogic(float dt)
 	this->huoxingSnakeEat();
 
 	this->draw(allBody,sHead,sFood);   
+}
+
+void Game::judgeOver()
+{
+	if(sHead->col >= 10 || sHead->col < 0 || sHead->row < 0 || sHead->row >= 10)
+		CCDirector::sharedDirector()->end();
+	for(unsigned int i=0;i<allBody.size();i++)  
+	{  
+		if((sHead->col == allBody[i]->col) && (sHead->row == allBody[i]->row))
+			CCDirector::sharedDirector()->end();
+	}
 }
 
 //绘制蛇和绘制食物
@@ -294,41 +305,26 @@ void Game::tanchiSnakeHeadMoveDirection()
 	{  
 	case UP:  
 		sHead->col++;//上移  
-		if(sHead->col >= 10)  
-		{  
-			//sHead->col=0;//超过顶部边界后便从底部出来  
-			CCDirector::sharedDirector()->end();
-		}  
+		this->judgeOver(); 
 		break;  
 	case DOWN:  
 		sHead->col--;  
-		if(sHead->col < 0)  
-		{  
-			//sHead->col=9;  
-			CCDirector::sharedDirector()->end();
-		}  
+		this->judgeOver();   
 		break;  
 	case LEFT:  
 		sHead->row--;  
-		if(sHead->row < 0)  
-		{  
-			//sHead->row=9;  
-			CCDirector::sharedDirector()->end();
-		}  
+		this->judgeOver();   
 		break;  
 	case RIGHT:  
 		sHead->row++;  
-		if(sHead->row >= 10)  
-		{  
-			//sHead->row=0;  
-			CCDirector::sharedDirector()->end();
-		}  
+		this->judgeOver();   
 		break;  
 	}   
 }
 //贪吃蛇吃食物
 void Game::tanchiSnakeEat() 
 {
+	srand((unsigned)time(0));
 	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
 	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
 	if(sHead->row == sFood->row && sHead->col == sFood->col) 

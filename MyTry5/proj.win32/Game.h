@@ -58,7 +58,7 @@ public:
 
 	//计算出蛇下个位置所以节点的坐标
 	void gameLogic(float dt);
-
+	void judgeOver();
 	//游戏分块逻辑
 	void huoxingSnakeHeadMoveDirection();
 	void tanchiSnakeHeadMoveDirection();
