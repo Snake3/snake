@@ -30,33 +30,30 @@ bool SpeedSelect::init()
 
 	ccColor3B color = ccc3(40, 240, 20);
 	//创建文字按钮 
-	auto labelSelect = CCLabelTTF::create("Select Speed Level:","宋体",20);
-	labelSelect->setColor(color);
-	auto labelHigh = CCLabelTTF::create("High", "宋体", 17); 
+	auto labelHigh = CCLabelTTF::create("High", "宋体", 19); 
 	labelHigh->setColor(color);
-	auto labelMiddle = CCLabelTTF::create("Middle", "宋体", 17); 
+	auto labelMiddle = CCLabelTTF::create("Middle", "宋体", 19); 
 	labelMiddle->setColor(color);
-	auto labelLow = CCLabelTTF::create("Low", "宋体", 17);
+	auto labelLow = CCLabelTTF::create("Low", "宋体", 19);
 	labelLow->setColor(color);
 
-	//labelSelect->setPosition(ccp(120,237));
-	//labelSelect->setVisible(true);
-	auto uiSelect = CCMenuItemLabel::create(labelSelect, this, menu_selector(SpeedSelect::menuCloseCallback)); 
-	uiSelect->setPosition(ccp(195,197));
+	CCSprite* select = CCSprite::create("select.png");
+	select->setPosition(ccp(202,192));
+	this->addChild(select);
 
 	auto uiHigh = CCMenuItemLabel::create(labelHigh, this, menu_selector(SpeedSelect::menuCloseCallback)); 
 	uiHigh->setTag(1); 
-	uiHigh->setPosition(ccp(120,150));
+	uiHigh->setPosition(ccp(125,150));
 
 	auto uiMiddle = CCMenuItemLabel::create(labelMiddle, this, menu_selector(SpeedSelect::menuCloseCallback)); 
 	uiMiddle->setTag(2); 
-	uiMiddle->setPosition(ccp(200,150));
+	uiMiddle->setPosition(ccp(215,150));
 
 	auto uiLow = CCMenuItemLabel::create(labelLow, this, menu_selector(SpeedSelect::menuCloseCallback)); 
 	uiLow->setTag(3); 
 	uiLow->setPosition(ccp(291,150));
 
-	auto menu = CCMenu::create(uiSelect,uiHigh,uiMiddle,uiLow, NULL); 
+	auto menu = CCMenu::create(uiHigh,uiMiddle,uiLow, NULL); 
 	menu->setPosition(CCPointZero); 
 	this->addChild(menu); 
 

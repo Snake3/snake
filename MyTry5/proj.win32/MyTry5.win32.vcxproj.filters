@@ -69,6 +69,9 @@
     <None Include="D:\git_file\Snake5\MyTry5\Resources\Background.png">
       <Filter>resource</Filter>
     </None>
+    <None Include="C:\Users\WGC\Desktop\select.png">
+      <Filter>resource</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyTry5.rc">

@@ -1,4 +1,4 @@
-﻿生成启动时间为 2014/4/22 12:27:43。
+﻿生成启动时间为 2014/4/22 13:33:54。
      1>项目“F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
          正在创建“Debug.win32\MyTry5.win32.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
@@ -31,4 +31,4 @@
 
 生成成功。
 
-已用时间 00:00:03.66
+已用时间 00:00:04.08
