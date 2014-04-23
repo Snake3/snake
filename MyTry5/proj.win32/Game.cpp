@@ -324,6 +324,7 @@ void Game::tanchiSnakeHeadMoveDirection()
 //贪吃蛇吃食物
 void Game::tanchiSnakeEat() 
 {
+	int flag = 1;
 	srand((unsigned)time(0));
 	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
 	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
@@ -332,6 +333,59 @@ void Game::tanchiSnakeEat()
 		//食物从当前位置消失，随机出现在下一个坐标  
 		sFood->row = rand()%10;  
 		sFood->col = rand()%10;  
+
+#if 0
+		//测试
+			for(unsigned int i=0;i<max(allBody.size(),asnakeBody.size());i++)  
+			{		
+				if(i<min(allBody.size(),asnakeBody.size())){
+					if(((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col))||((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col))||((sHead->row == sFood->row)&&(sHead->col == sFood->col))||((aHead->row == sFood->row)&&(aHead->col == sFood->col))){
+					sFood->row = rand()%10;
+					sFood->col = rand()%10;
+					i = 0;
+					}
+				}
+				else{
+					if(allBody.size()>asnakeBody.size()){
+						if((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col)){
+							sFood->row = rand()%10;
+							sFood->col = rand()%10;
+							i = 0;
+						}
+					}
+					else{
+						if((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col)){
+							sFood->row = rand()%10;
+							sFood->col = rand()%10;
+							i = 0;
+						}
+					}
+				}
+			}
+#endif
+
+			while(flag){
+				for(unsigned int i=0;i<allBody.size();i++){
+					if(((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col))||((sHead->row == sFood->row)&&(sHead->col == sFood->col))){
+						sFood->row = rand()%10;
+						sFood->col = rand()%10;
+						i = 0;
+					}
+				}
+				flag = 0;
+				for(unsigned int i=0;i<asnakeBody.size();i++){
+					if(((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col))||((aHead->row == sFood->row)&&(aHead->col == sFood->col))){
+						sFood->row = rand()%10;
+						sFood->col = rand()%10;
+						i = 0;
+						flag = 1;
+					}
+				}
+			}
+
+
+
+		
 
 
 		//添加身体到集合  
@@ -439,12 +493,32 @@ void Game::huoxingSnakeHeadMoveDirection()
 //火星蛇吃食物
 void Game::huoxingSnakeEat() 
 {
+	int flag = 1;
 	//火星蛇的碰撞检测
 	if(aHead->row==sFood->row&&aHead->col==sFood->col)
 	{
 		//食物从当前位置消失，随机出现在下一个坐标  
 		sFood->row = rand()%10;  
-		sFood->col = rand()%10;  
+		sFood->col = rand()%10; 
+
+		while(flag){
+				for(unsigned int i=0;i<allBody.size();i++){
+					if(((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col))||((sHead->row == sFood->row)&&(sHead->col == sFood->col))){
+						sFood->row = rand()%10;
+						sFood->col = rand()%10;
+						i = 0;
+					}
+				}
+				flag = 0;
+				for(unsigned int i=0;i<asnakeBody.size();i++){
+					if(((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col))||((aHead->row == sFood->row)&&(aHead->col == sFood->col))){
+						sFood->row = rand()%10;
+						sFood->col = rand()%10;
+						i = 0;
+						flag = 1;
+					}
+				}
+			}
 
 
 		//添加身体到集合  
