@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "SimpleAudioEngine.h"
+#include "EarthSnake.h"
+#include "MarsSnake.h"
 
 //枚举
 typedef enum {  
@@ -12,21 +14,6 @@ typedef enum {
 	LEFT=3,  
 	RIGHT=4  
 }DIR_DEF;
-
-//蛇的节点
-class SnakeNode
-{
-public:  
-	int row;//第几行  
-	int col;//第几列  
-	int dir;//方向  
-	SnakeNode()
-	{
-		row = rand()%10;  //0~9
-		col = rand()%10;
-		dir=1;//方向上
-	}
-};
 
 class Game : public cocos2d::CCLayer
 {
@@ -54,12 +41,15 @@ public:
 	//~Game();
 	void setDirection(CCObject* obj);
 	//显示蛇的函数
-	void draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFood);
+	void draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood);
 
 	//计算出蛇下个位置所以节点的坐标
 	void gameLogic(float dt);
 	void judgeOver();
+	void createFood(EarthSnake*,MarsSnake*,int haveEat);
+
 	//游戏分块逻辑
+	/*
 	void huoxingSnakeHeadMoveDirection();
 	void tanchiSnakeHeadMoveDirection();
 
@@ -68,6 +58,7 @@ public:
 
 	void tanchiSnakeEat();
 	void huoxingSnakeEat();
+	*/
 
 	//方向控制函数
 	//void runUp(float dt);
@@ -92,7 +83,7 @@ public:
 	//cocos2d::CCArray* _projs;
 //protected:
 	//SnakeNode *sBody;  //贪食蛇
-	//cocos2d::CCArray* allBody;//蛇的身体
+	//cocos2d::CCArray* snakeBody;//蛇的身体
 };
 
 #endif  // __HELLOWORLD_SCENE_H_

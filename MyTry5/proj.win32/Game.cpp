@@ -6,12 +6,9 @@ using namespace cocos2d;
 int direction = 1;					//初始化方向
 extern float speed;
 
-vector<SnakeNode*> allBody;			//声明贪吃蛇的身体，不包括蛇头
-vector<SnakeNode*> asnakeBody;		//声明火星蛇的身体，不包括蛇头
-
 SnakeNode *sFood = new SnakeNode();	//食物节点初始化
-SnakeNode *sHead = new SnakeNode();	//贪吃蛇蛇头节点初始化
-SnakeNode *aHead= new SnakeNode();	//火星蛇蛇头节点初始化
+EarthSnake *earthSnake = new EarthSnake();
+MarsSnake *marsSnake = new MarsSnake();
 
 CCScene* Game::scene()
 {
@@ -147,7 +144,7 @@ void Game::setDirection(CCObject* obj)
 	switch (i) 
 	{ 
 	case UP:
-		if((sHead->dir != UP) && (sHead->dir != DOWN))
+		if((earthSnake->snakeHead->dir != UP) && (earthSnake->snakeHead->dir != DOWN))
 		{
 			//方向切换会闪是因为这个原因
 			//this->unscheduleAllSelectors();
@@ -156,7 +153,7 @@ void Game::setDirection(CCObject* obj)
 		}
 		break; 
 	case DOWN:
-		if((sHead->dir != DOWN) && (sHead->dir != UP))
+		if((earthSnake->snakeHead->dir != DOWN) && (earthSnake->snakeHead->dir != UP))
 		{
 			//this->unscheduleAllSelectors();
 			direction = DOWN;
@@ -164,7 +161,7 @@ void Game::setDirection(CCObject* obj)
 		}
 		break; 
 	case LEFT:
-		if((sHead->dir != LEFT) && (sHead->dir != RIGHT))
+		if((earthSnake->snakeHead->dir != LEFT) && (earthSnake->snakeHead->dir != RIGHT))
 		{
 			//this->unscheduleAllSelectors();
 			direction = LEFT;
@@ -172,7 +169,7 @@ void Game::setDirection(CCObject* obj)
 		}
 		break;
 	case RIGHT:
-		if((sHead->dir != RIGHT) && (sHead->dir != LEFT))
+		if((earthSnake->snakeHead->dir != RIGHT) && (earthSnake->snakeHead->dir != LEFT))
 		{
 			//this->unscheduleAllSelectors();
 			direction = RIGHT;
@@ -184,36 +181,66 @@ void Game::setDirection(CCObject* obj)
 	}
 }
 
-//计算出蛇下个位置每个节点的坐标  
-void Game::gameLogic(float dt)  
-{     
-	sHead->dir = direction;
-
-	this->tanchiSnakeMoveBody();
-	this->huoxingSnakeMoveBody();
-	this->tanchiSnakeHeadMoveDirection();
-	this->huoxingSnakeHeadMoveDirection();
-
-	//吃食物
-	this->tanchiSnakeEat();
-	this->huoxingSnakeEat();
-
-	this->draw(allBody,sHead,sFood);   
-}
-
-void Game::judgeOver()
-{
-	if(sHead->col >= 10 || sHead->col < 0 || sHead->row < 0 || sHead->row >= 10)
-		CCDirector::sharedDirector()->end();
-	for(unsigned int i=0;i<allBody.size();i++)  
-	{  
-		if((sHead->col == allBody[i]->col) && (sHead->row == allBody[i]->row))
-			CCDirector::sharedDirector()->end();
+void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,int haveEat){
+	int flag = 1;
+	srand((unsigned)time(0));
+	if(haveEat == 1){
+	sFood->row = rand()%10;  
+	sFood->col = rand()%10;
+	while(flag){
+			for(unsigned int i=0;i<marsSnake->snakeBody.size();i++){
+					if(((marsSnake->snakeBody[i]->row == sFood->row)&&(marsSnake->snakeBody[i]->col == sFood->col))||((marsSnake->snakeHead->row == sFood->row)&&(marsSnake->snakeHead->col == sFood->col))){
+						sFood->row = rand()%10;
+						sFood->col = rand()%10;
+						i = 0;
+					}
+				}
+				flag = 0;
+				for(unsigned int i=0;i<earthSnake->snakeBody.size();i++){
+					if(((earthSnake->snakeBody[i]->row == sFood->row)&&(earthSnake->snakeBody[i]->col == sFood->col))||((earthSnake->snakeHead->row == sFood->row)&&(earthSnake->snakeHead->col == sFood->col))){
+						sFood->row = rand()%10;
+						sFood->col = rand()%10;
+						i = 0;
+						flag = 1;
+					}
+				}
+			}
 	}
 }
 
+
+//计算出蛇下个位置每个节点的坐标  
+void Game::gameLogic(float dt)  
+{     
+	int haveEat;
+
+	earthSnake->snakeHead->dir = direction;
+	marsSnake->snakeHead->dir = direction;
+
+	//this->tanchiSnakeMoveBody();
+	//this->huoxingSnakeMoveBody();
+	//this->tanchiSnakeHeadMoveDirection();
+	//this->huoxingSnakeHeadMoveDirection();
+
+	earthSnake->BodyMove();
+	marsSnake->BodyMove();
+	earthSnake->HeadMove();
+	marsSnake->HeadMove(sFood);
+	haveEat = earthSnake->eat(sFood);
+	createFood(earthSnake,marsSnake,haveEat);
+	haveEat = marsSnake->eat(sFood);
+	createFood(earthSnake,marsSnake,haveEat);
+
+	//吃食物
+	//this->tanchiSnakeEat();
+	//this->huoxingSnakeEat();
+
+	this->draw(earthSnake,marsSnake,sFood);   
+}
+
+
 //绘制蛇和绘制食物
-void Game::draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFood)
+void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 {
 	CCFiniteTimeAction * delay = CCDelayTime::create(speed);
 	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
@@ -222,14 +249,14 @@ void Game::draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFoo
 
 	//绘制蛇头  
 	CCSprite *head=CCSprite::create("p9.png");
-	head->setPosition(ccp(sHead->row*32+16,sHead->col*32+16));
+	head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
 	this->addChild(head);
 	head->runAction(seq);
 
 	
 	//火星蛇头
 	CCSprite *ahead=CCSprite::create("p7.png");
-	ahead->setPosition(ccp(aHead->row*32+16,aHead->col*32+16));
+	ahead->setPosition(ccp(marsSnake->snakeHead->row*32+16,marsSnake->snakeHead->col*32+16));
 	this->addChild(ahead);
 	ahead->runAction(disahead);
 
@@ -242,42 +269,43 @@ void Game::draw(std::vector<SnakeNode*> allBody,SnakeNode* sHead,SnakeNode* sFoo
 	food->runAction(disFood);
 
 	//绘制身体  
-	for(unsigned int i=0;i<allBody.size();i++)  
+	for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
 	{  
 		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *body=CCSprite::create("p9.png");
-		body->setPosition(ccp(allBody[i]->row*32+16,allBody[i]->col*32+16));
+		body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
 		this->addChild(body);
 		body->runAction(disBody);
 	}  
 
 
-	for(unsigned int i=0;i<asnakeBody.size();i++)  
+	for(unsigned int i=0;i<marsSnake->snakeBody.size();i++)  
 	{  
 		CCAction *disaBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *abody=CCSprite::create("p7.png");
-		abody->setPosition(ccp(asnakeBody[i]->row*32+16,asnakeBody[i]->col*32+16));
+		abody->setPosition(ccp(marsSnake->snakeBody[i]->row*32+16,marsSnake->snakeBody[i]->col*32+16));
 		this->addChild(abody);
 		abody->runAction(disaBody);
 	}
 
 }
 
+/*
 //贪吃蛇移动蛇的身体,不包括蛇头
 void Game::tanchiSnakeMoveBody() 
 {
 	//移动蛇的身体,不包括蛇头  
-	for(int i = allBody.size()-1; i>=0; i--)  
+	for(int i = snakeBody.size()-1; i>=0; i--)  
 	{   
-		//sn为指向allBody元素的指针，通过sn可更改allBody元素的值，即跟新到下个位置
+		//sn为指向snakeBody元素的指针，通过sn可更改snakeBody元素的值，即跟新到下个位置
 		//获取蛇身体上的某个节点
-		SnakeNode * sn = (SnakeNode *)allBody.at(i);  
+		SnakeNode * sn = (SnakeNode *)snakeBody.at(i);  
 
 		//把蛇身体前面的节点赋值给后面的节点，实现蛇节点向前移动一个位置
 		if(i>0)   
 		{   
 			//如果该节点不是第一个节点,那么该节点的下一个坐标就是其前一个点的坐标（这里不用多解释，玩过蛇的都懂）  
-			SnakeNode * snpre = (SnakeNode *)allBody.at(i-1);  
+			SnakeNode * snpre = (SnakeNode *)snakeBody.at(i-1);  
 
 			//更改行列和方向
 
@@ -291,32 +319,32 @@ void Game::tanchiSnakeMoveBody()
 		else if(i==0)  
 		{  
 			//如果i=0则是第一个节点，蛇头的坐标便是该节点的坐标  
-			sn->dir = sHead->dir;  
-			sn->row = sHead->row;  
-			sn->col = sHead->col;  
+			sn->dir = snakeHead->dir;  
+			sn->row = snakeHead->row;  
+			sn->col = snakeHead->col;  
 		}  
 	}  
 }
 //贪吃蛇的蛇头移动方向
 void Game::tanchiSnakeHeadMoveDirection() 
 {
-	//根据sHead的值，判断蛇头移动的方向，从而计算出蛇头下个位置的坐标以及移动方向
-	switch(sHead->dir)  
+	//根据snakeHead的值，判断蛇头移动的方向，从而计算出蛇头下个位置的坐标以及移动方向
+	switch(snakeHead->dir)  
 	{  
 	case UP:  
-		sHead->col++;//上移  
+		snakeHead->col++;//上移  
 		this->judgeOver(); 
 		break;  
 	case DOWN:  
-		sHead->col--;  
+		snakeHead->col--;  
 		this->judgeOver();   
 		break;  
 	case LEFT:  
-		sHead->row--;  
+		snakeHead->row--;  
 		this->judgeOver();   
 		break;  
 	case RIGHT:  
-		sHead->row++;  
+		snakeHead->row++;  
 		this->judgeOver();   
 		break;  
 	}   
@@ -324,78 +352,24 @@ void Game::tanchiSnakeHeadMoveDirection()
 //贪吃蛇吃食物
 void Game::tanchiSnakeEat() 
 {
-	int flag = 1;
 	srand((unsigned)time(0));
 	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
 	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
-	if(sHead->row == sFood->row && sHead->col == sFood->col) 
+	if(snakeHead->row == sFood->row && snakeHead->col == sFood->col) 
 	{   
 		//食物从当前位置消失，随机出现在下一个坐标  
 		sFood->row = rand()%10;  
 		sFood->col = rand()%10;  
 
-#if 0
-		//测试
-			for(unsigned int i=0;i<max(allBody.size(),asnakeBody.size());i++)  
-			{		
-				if(i<min(allBody.size(),asnakeBody.size())){
-					if(((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col))||((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col))||((sHead->row == sFood->row)&&(sHead->col == sFood->col))||((aHead->row == sFood->row)&&(aHead->col == sFood->col))){
-					sFood->row = rand()%10;
-					sFood->col = rand()%10;
-					i = 0;
-					}
-				}
-				else{
-					if(allBody.size()>asnakeBody.size()){
-						if((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col)){
-							sFood->row = rand()%10;
-							sFood->col = rand()%10;
-							i = 0;
-						}
-					}
-					else{
-						if((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col)){
-							sFood->row = rand()%10;
-							sFood->col = rand()%10;
-							i = 0;
-						}
-					}
-				}
-			}
-#endif
-
-			while(flag){
-				for(unsigned int i=0;i<allBody.size();i++){
-					if(((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col))||((sHead->row == sFood->row)&&(sHead->col == sFood->col))){
-						sFood->row = rand()%10;
-						sFood->col = rand()%10;
-						i = 0;
-					}
-				}
-				flag = 0;
-				for(unsigned int i=0;i<asnakeBody.size();i++){
-					if(((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col))||((aHead->row == sFood->row)&&(aHead->col == sFood->col))){
-						sFood->row = rand()%10;
-						sFood->col = rand()%10;
-						i = 0;
-						flag = 1;
-					}
-				}
-			}
-
-
-
-		
-
 
 		//添加身体到集合  
 		SnakeNode * sn = new SnakeNode();//创建一个新的节点（也就是吃掉的那个食物），将其放到蛇的尾巴上  
 		SnakeNode * lastNode = NULL;  
-		//获取蛇的最后一个节点，如果allBody的size()为0，则说明蛇是第一次捕食，那么它的最后一个节点也就是蛇头啦。  
-		if(allBody.size()>0)  
-			lastNode = (SnakeNode *)allBody.back();  
+		//获取蛇的最后一个节点，如果snakeBody的size()为0，则说明蛇是第一次捕食，那么它的最后一个节点也就是蛇头啦。  
+		if(snakeBody.size()>0)  
+			lastNode = (SnakeNode *)snakeBody.back();  
 		else  
-			lastNode = sHead;//最后一个节点是蛇头  
+			lastNode = snakeHead;//最后一个节点是蛇头  
 
 
 		//通过最后一个节点的方向来个新的节点初始化横、列坐标  
@@ -423,7 +397,7 @@ void Game::tanchiSnakeEat()
 			break;  
 
 		}  
-		allBody.push_back(sn);//将新的节点加入到蛇的身体中。  
+		snakeBody.push_back(sn);//将新的节点加入到蛇的身体中。  
 	}  
 }
 
@@ -432,7 +406,7 @@ void Game::huoxingSnakeMoveBody()
 {
 	for(int i = asnakeBody.size()-1; i>=0; i--)  
 	{   
-		//sn为指向allBody元素的指针，通过sn可更改allBody元素的值，即跟新到下个位置
+		//sn为指向snakeBody元素的指针，通过sn可更改snakeBody元素的值，即跟新到下个位置
 		//获取蛇身体上的某个节点
 		SnakeNode * sn = (SnakeNode *)asnakeBody.at(i);  
 
@@ -493,38 +467,18 @@ void Game::huoxingSnakeHeadMoveDirection()
 //火星蛇吃食物
 void Game::huoxingSnakeEat() 
 {
-	int flag = 1;
 	//火星蛇的碰撞检测
 	if(aHead->row==sFood->row&&aHead->col==sFood->col)
 	{
 		//食物从当前位置消失，随机出现在下一个坐标  
 		sFood->row = rand()%10;  
-		sFood->col = rand()%10; 
-
-		while(flag){
-				for(unsigned int i=0;i<allBody.size();i++){
-					if(((allBody[i]->row == sFood->row)&&(allBody[i]->col == sFood->col))||((sHead->row == sFood->row)&&(sHead->col == sFood->col))){
-						sFood->row = rand()%10;
-						sFood->col = rand()%10;
-						i = 0;
-					}
-				}
-				flag = 0;
-				for(unsigned int i=0;i<asnakeBody.size();i++){
-					if(((asnakeBody[i]->row == sFood->row)&&(asnakeBody[i]->col == sFood->col))||((aHead->row == sFood->row)&&(aHead->col == sFood->col))){
-						sFood->row = rand()%10;
-						sFood->col = rand()%10;
-						i = 0;
-						flag = 1;
-					}
-				}
-			}
+		sFood->col = rand()%10;  
 
 
 		//添加身体到集合  
 		SnakeNode * sn = new SnakeNode();//创建一个新的节点（也就是吃掉的那个食物），将其放到蛇的尾巴上  
 		SnakeNode * lastNode = NULL;  
-		//获取蛇的最后一个节点，如果allBody的size()为0，则说明蛇是第一次捕食，那么它的最后一个节点也就是蛇头啦。  
+		//获取蛇的最后一个节点，如果snakeBody的size()为0，则说明蛇是第一次捕食，那么它的最后一个节点也就是蛇头啦。  
 		if(asnakeBody.size()>0)  
 			lastNode = (SnakeNode *)asnakeBody.back();  
 		else  
@@ -557,3 +511,4 @@ void Game::huoxingSnakeEat()
 		asnakeBody.push_back(sn);//将新的节点加入到蛇的身体中
 	}
 }
+*/

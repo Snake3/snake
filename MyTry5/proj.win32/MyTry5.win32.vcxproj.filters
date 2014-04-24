@@ -100,6 +100,15 @@
     <ClInclude Include="SpeedSelect.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="SnakeNode.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="EarthSnake.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="MarsSnake.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -118,6 +127,15 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="SpeedSelect.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="EarthSnake.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="MarsSnake.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="SnakeNode.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>
