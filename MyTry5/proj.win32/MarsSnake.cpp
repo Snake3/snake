@@ -122,7 +122,7 @@ void MarsSnake::HeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 	#endif
 
 	//AStar算法实现曼哈顿距离
-	vector<SnakeNode*> OpenList, CloseList, pList;
+	vector<SnakeNode*> OpenList, CloseList;
 	//当前节点p及其相邻节点
 	SnakeNode *p = new SnakeNode();
 
@@ -196,6 +196,11 @@ void MarsSnake::HeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			if(adj[b]->col > 9 || adj[b]->col < 0 || adj[b]->row > 9 || adj[b]->row < 0)
 			{	
 				//c = b;
+				CloseList.push_back(adj[b]);
+				if(isContain(CloseList,pu) && isContain(CloseList,pd) &&isContain(CloseList,pl) &&isContain(CloseList,pr))
+				{
+					exit(1);
+				}
 				adj.erase(adj.begin() + b);
 				adjSize--;
 			}
@@ -207,8 +212,8 @@ void MarsSnake::HeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		
 		OpenList.insert(OpenList.end(),adj.begin(),adj.end());
 
-		/*
-		//从OpenList中删除当前节点p
+		
+		/*//从OpenList中删除当前节点p
 		//int k = 0;
 		for(unsigned int j = 0; j < OpenList.size();)
 		{
@@ -221,20 +226,23 @@ void MarsSnake::HeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			{
 				j++;
 			}
-		}
-		*/
-		CloseList.push_back(p);
+		}*/
+		
 
+		CloseList.push_back(p);
+		
 		
 		//p = adj[temp];
 		//CloseList.push_back(p);
 		//aHead = p;
 		
 		//OpenList与CloseList互斥,CloseList障碍物里面的节点不能出现在OpenList中
-		for(unsigned openlistSize = 0; openlistSize < OpenList.size(); openlistSize++)
+		for(unsigned openlistSize = 0; openlistSize < OpenList.size(); )
 		{
 			if(isContain(CloseList,OpenList[openlistSize]))
 				OpenList.erase(OpenList.begin() + openlistSize);
+			else
+				openlistSize++;
 		}
 		//相邻节点出现在CloseList障碍物中则删除
 		for(unsigned int e = 0; e < adjSize;)
@@ -250,6 +258,8 @@ void MarsSnake::HeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 				e++;
 			}
 		}
+		
+		
 
 		int smallest=100,temp = 0;
 		for(unsigned int k = 0; k < adjSize; k++)
@@ -272,16 +282,14 @@ void MarsSnake::HeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			*/
 		}
 		
-		if(adjSize < 1)
-		{
-			CCDirector::sharedDirector()->end();
-		}
+		
+		
 		while(isContain(CloseList,adj[temp]))
 		{
-			if(adjSize < 1)
+			/*if(adjSize < 1)
 			{
 				CCDirector::sharedDirector()->end();
-			}
+			}*/
 			
 			for(unsigned int adjLength = 0; adjLength < adjSize;)
 			{
