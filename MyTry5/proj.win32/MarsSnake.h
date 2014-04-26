@@ -12,7 +12,7 @@ public:
 	MarsSnake();
 	std::vector<SnakeNode*> snakeBody;
 	SnakeNode* snakeHead;
-	int eat(SnakeNode*);
+	bool eat(SnakeNode*);
 	void BodyMove();
 	void HeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);

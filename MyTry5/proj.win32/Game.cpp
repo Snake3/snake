@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "Game.h"
+#include "SimpleAudioEngine.h"
 
 using namespace cocos2d;
 
@@ -77,6 +78,19 @@ bool Game::init()
 	//this->schedule(schedule_selector(Game::myGameLogic),1);
 	this->schedule(schedule_selector(Game::gameLogic),speed);
 	
+	if(speed == 0.4f)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("high.mp3",true);
+	}
+	else if(speed == 0.7f)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("middle.mp3",true);
+	}
+	else
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("low.mp3",true);
+	}
+
     return true;
 }
 
@@ -165,10 +179,10 @@ void Game::setDirection(CCObject* obj)
 	}
 }
 
-void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,int haveEat){
-	int flag = 1;
+void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
+	bool flag = true;
 	srand((unsigned)time(0));
-	if(haveEat == 1){
+	if(haveEat){
 	sFood->row = rand()%10;  
 	sFood->col = rand()%10;
 	while(flag){
@@ -179,13 +193,13 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,int haveEat){
 						i = 0;
 					}
 				}
-				flag = 0;
+				flag = false;
 				for(unsigned int i=0;i<earthSnake->snakeBody.size();i++){
 					if(((earthSnake->snakeBody[i]->row == sFood->row)&&(earthSnake->snakeBody[i]->col == sFood->col))||((earthSnake->snakeHead->row == sFood->row)&&(earthSnake->snakeHead->col == sFood->col))){
 						sFood->row = rand()%10;
 						sFood->col = rand()%10;
 						i = 0;
-						flag = 1;
+						flag = true;
 					}
 				}
 			}
@@ -196,17 +210,28 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,int haveEat){
 //计算出蛇下个位置每个节点的坐标  
 void Game::gameLogic(float dt)  
 {     
-	int haveEat;
+	bool haveEat = false;
 	earthSnake->snakeHead->dir = direction;
 
 	earthSnake->BodyMove();
 	marsSnake->BodyMove();
+
 	earthSnake->HeadMove();
 	marsSnake->HeadMove(sFood,earthSnake);
+
 	haveEat = earthSnake->eat(sFood);
 	createFood(earthSnake,marsSnake,haveEat);
+	if(haveEat)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
+	}
+	
 	haveEat = marsSnake->eat(sFood);
 	createFood(earthSnake,marsSnake,haveEat);
+	if(haveEat)
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
+	}
 
 	this->draw(earthSnake,marsSnake,sFood);   
 }

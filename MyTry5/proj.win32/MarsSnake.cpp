@@ -10,13 +10,13 @@ MarsSnake::MarsSnake()
 	snakeHead = new SnakeNode();
 }
 
-int MarsSnake::eat(SnakeNode* sFood)
+bool MarsSnake::eat(SnakeNode* sFood)
 {
-	int haveEat = 0;
+	bool haveEat = false;
 	//火星蛇的碰撞检测
 	if(snakeHead->row==sFood->row&&snakeHead->col==sFood->col)
 	{
-		haveEat = 1;
+		haveEat = true;
 		//食物从当前位置消失，随机出现在下一个坐标    
 
 		//添加身体到集合  

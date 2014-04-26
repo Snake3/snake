@@ -11,7 +11,7 @@ public:
 	EarthSnake();
 	std::vector<SnakeNode*> snakeBody;
 	SnakeNode* snakeHead;
-	int eat(SnakeNode*);
+	bool eat(SnakeNode*);
 	void BodyMove();
 	void HeadMove();
 	//void judgeOver();

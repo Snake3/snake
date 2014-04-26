@@ -9,14 +9,14 @@ EarthSnake::EarthSnake(){
 	snakeHead = new SnakeNode();
 }
 
-int EarthSnake::eat(SnakeNode* sFood){
-		int haveEat = 0;
+bool EarthSnake::eat(SnakeNode* sFood){
+		bool haveEat = false;
 		srand((unsigned)time(0));
 	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
 	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
 	if(snakeHead->row == sFood->row && snakeHead->col == sFood->col) 
 	{   
-		haveEat = 1;
+		haveEat = true;
 		//食物从当前位置消失，随机出现在下一个坐标  
 
 		//添加身体到集合  
