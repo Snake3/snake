@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "SnakeNode.h"
+//#include "MarsSnake.h"
 
 class EarthSnake
 {
@@ -13,7 +14,7 @@ public:
 	int eat(SnakeNode*);
 	void BodyMove();
 	void HeadMove();
-	void judgeOver();
+	//void judgeOver();
 };
 
 #endif 

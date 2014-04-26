@@ -1,15 +1,15 @@
 #include "HelloWorldScene.h"
 #include "Game.h"
-#include "SnakeNode.h"
+
 #include "EarthSnake.h"
 
 using namespace cocos2d;
 
-	EarthSnake::EarthSnake(){
-		snakeHead = new SnakeNode();
-	}
+EarthSnake::EarthSnake(){
+	snakeHead = new SnakeNode();
+}
 
-	int EarthSnake::eat(SnakeNode* sFood){
+int EarthSnake::eat(SnakeNode* sFood){
 		int haveEat = 0;
 		srand((unsigned)time(0));
 	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
@@ -59,7 +59,7 @@ using namespace cocos2d;
 	return haveEat;
 	}
 
-	void EarthSnake::BodyMove(){
+void EarthSnake::BodyMove(){
 		//移动蛇的身体,不包括蛇头  
 	for(int i = snakeBody.size()-1; i>=0; i--)  
 	{   
@@ -92,36 +92,28 @@ using namespace cocos2d;
 	}  
 	}
 
-	void EarthSnake::HeadMove(){
-		//根据snakeHead的值，判断蛇头移动的方向，从而计算出蛇头下个位置的坐标以及移动方向
+void EarthSnake::HeadMove(){
+	//根据snakeHead的值，判断蛇头移动的方向，从而计算出蛇头下个位置的坐标以及移动方向
+	Game *game = NULL;
 	switch(snakeHead->dir)  
 	{  
 	case UP:  
 		snakeHead->col++;//上移  
-		this->judgeOver(); 
+		game->judgeOver(); 
 		break;  
 	case DOWN:  
 		snakeHead->col--;  
-		this->judgeOver();   
+		game->judgeOver();   
 		break;  
 	case LEFT:  
 		snakeHead->row--;  
-		this->judgeOver();   
+		game->judgeOver();   
 		break;  
 	case RIGHT:  
 		snakeHead->row++;  
-		this->judgeOver();   
+		game->judgeOver();   
 		break;  
 	}   
 }
 
-	void EarthSnake::judgeOver()
-{
-	if(snakeHead->col >= 10 || snakeHead->col < 0 || snakeHead->row < 0 || snakeHead->row >= 10)
-		CCDirector::sharedDirector()->end();
-	for(unsigned int i=0;i<snakeBody.size();i++)  
-	{  
-		if((snakeHead->col == snakeBody[i]->col) && (snakeHead->row == snakeBody[i]->row))
-			CCDirector::sharedDirector()->end();
-	}
-}
+

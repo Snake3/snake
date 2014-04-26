@@ -72,6 +72,9 @@
     <None Include="C:\Users\WGC\Desktop\select.png">
       <Filter>resource</Filter>
     </None>
+    <None Include="C:\Users\WGC\Desktop\MyTry5\Resources\p5.png">
+      <Filter>resource</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyTry5.rc">

@@ -6,7 +6,8 @@ class SnakeNode
 public: 
 	int row;//第几行  
 	int col;//第几列  
-	int dir;//方向  
+	int dir;//方向
+	int HValue;
 	SnakeNode();
 };
 

@@ -3,6 +3,9 @@
 
 #include <vector>
 #include "SnakeNode.h"
+#include "EarthSnake.h"
+
+using namespace cocos2d;
 
 class MarsSnake{
 public:
@@ -11,7 +14,8 @@ public:
 	SnakeNode* snakeHead;
 	int eat(SnakeNode*);
 	void BodyMove();
-	void HeadMove(SnakeNode*);
+	void HeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
+	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);
 };
 
 #endif
