@@ -217,7 +217,7 @@ void Game::gameLogic(float dt)
 	marsSnake->BodyMove();
 
 	earthSnake->HeadMove();
-	marsSnake->HeadMove(sFood,earthSnake);
+	marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
 
 	haveEat = earthSnake->eat(sFood);
 	createFood(earthSnake,marsSnake,haveEat);

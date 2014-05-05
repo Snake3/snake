@@ -3,16 +3,13 @@
 
 #include <vector>
 #include "SnakeNode.h"
-//#include "MarsSnake.h"
+#include "Snake.h"
 
-class EarthSnake
+class EarthSnake:public Snake
 {
 public:
 	EarthSnake();
-	std::vector<SnakeNode*> snakeBody;
-	SnakeNode* snakeHead;
 	bool eat(SnakeNode*);
-	void BodyMove();
 	void HeadMove();
 	//void judgeOver();
 };

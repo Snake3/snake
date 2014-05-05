@@ -4,17 +4,17 @@
 #include <vector>
 #include "SnakeNode.h"
 #include "EarthSnake.h"
+#include "Snake.h"
 
 using namespace cocos2d;
 
-class MarsSnake{
+class MarsSnake:public Snake
+{
 public:
 	MarsSnake();
-	std::vector<SnakeNode*> snakeBody;
-	SnakeNode* snakeHead;
 	bool eat(SnakeNode*);
-	void BodyMove();
-	void HeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
+	void HeadMove();
+	void MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);
 };
 

@@ -112,6 +112,9 @@
     <ClInclude Include="MarsSnake.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -139,6 +142,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="SnakeNode.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Snake.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

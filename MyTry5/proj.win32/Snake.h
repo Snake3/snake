@@ -1,7 +1,6 @@
 #pragma once
-
-#ifndef __SNAKE_NODE_H__
-#define __SNAKE_NODE_H__
+#ifndef __SNAKE_H__
+#define __SNAKE_H__
 
 #include <vector>
 #include "SnakeNode.h"
@@ -9,11 +8,12 @@
 class Snake
 {
 public:
-	vector<SnakeNode> snakeBody;
+	Snake();
+	std::vector<SnakeNode*> snakeBody;
 	SnakeNode* snakeHead;
-	virtual void eat(){};
-	virtual void BodyMove(){};
-	virtual void HeadMove(){};
+	virtual bool eat(SnakeNode*) = 0;
+	void BodyMove();
+	virtual void HeadMove() = 0;
 };
 
-#endif 
+#endif
