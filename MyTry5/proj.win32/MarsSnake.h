@@ -14,7 +14,7 @@ public:
 	MarsSnake();
 	bool eat(SnakeNode*);
 	void HeadMove();
-	void MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
+	bool MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);
 };
 

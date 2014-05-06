@@ -36,12 +36,6 @@
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\background1.jpg">
       <Filter>resource</Filter>
     </None>
-    <None Include="C:\Users\WGC\Desktop\p6.png">
-      <Filter>resource</Filter>
-    </None>
-    <None Include="..\..\..\..\file\Resources\p7.png">
-      <Filter>resource</Filter>
-    </None>
     <None Include="..\Resources\grid5.jpg">
       <Filter>resource</Filter>
     </None>
@@ -60,9 +54,6 @@
     <None Include="C:\Users\WGC\Desktop\Down.png">
       <Filter>resource</Filter>
     </None>
-    <None Include="C:\Users\WGC\Desktop\p9.png">
-      <Filter>resource</Filter>
-    </None>
     <None Include="E:\个人\聊天记录\577915246\FileRecv\Resources\p8.png">
       <Filter>resource</Filter>
     </None>
@@ -72,7 +63,10 @@
     <None Include="C:\Users\WGC\Desktop\select.png">
       <Filter>resource</Filter>
     </None>
-    <None Include="C:\Users\WGC\Desktop\MyTry5\Resources\p5.png">
+    <None Include="..\Resources\winbg.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\losebg.jpg">
       <Filter>resource</Filter>
     </None>
   </ItemGroup>
@@ -113,7 +107,13 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="Snake.h">
-      <Filter>source</Filter>
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="LoseGame.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="WinBattle.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +145,12 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="Snake.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="LoseGame.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="WinBattle.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

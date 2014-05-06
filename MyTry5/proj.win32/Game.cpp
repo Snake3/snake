@@ -1,11 +1,14 @@
 #include "HelloWorldScene.h"
 #include "Game.h"
 #include "SimpleAudioEngine.h"
+#include "LoseGame.h"
+#include "WinBattle.h"
 
 using namespace cocos2d;
 
 int direction = 1;					//初始化方向
 extern float speed;
+bool winFlag = false;
 
 SnakeNode *sFood = new SnakeNode();	//食物节点初始化
 EarthSnake *earthSnake = new EarthSnake();
@@ -42,10 +45,10 @@ bool Game::init()
 	auto labelBack = CCLabelTTF::create("Main Menu", "宋体", 18); 
 
 	//方向键
-	CCMenuItemImage *pUpItem = CCMenuItemImage::create("Up.png","Up.png",this,menu_selector(Game::setDirection) );
-	CCMenuItemImage *pDownItem = CCMenuItemImage::create("Down.png","Down.png",this,menu_selector(Game::setDirection) );
-	CCMenuItemImage *pLeftItem = CCMenuItemImage::create("Left.png","Left.png",this,menu_selector(Game::setDirection) );
-	CCMenuItemImage *pRightItem = CCMenuItemImage::create("Right.png","Right.png",this,menu_selector(Game::setDirection) );
+	CCMenuItemImage *pUpItem = CCMenuItemImage::create("Up.png","UpSelected.png",this,menu_selector(Game::setDirection) );
+	CCMenuItemImage *pDownItem = CCMenuItemImage::create("Down.png","DownSelected.png",this,menu_selector(Game::setDirection) );
+	CCMenuItemImage *pLeftItem = CCMenuItemImage::create("Left.png","LeftSelected.png",this,menu_selector(Game::setDirection) );
+	CCMenuItemImage *pRightItem = CCMenuItemImage::create("Right.png","RightSelected.png",this,menu_selector(Game::setDirection) );
 
 	auto uiTry = CCMenuItemLabel::create(labelResume, this, menu_selector(Game::responseFunc)); 
     uiTry->setTag(11); 
@@ -207,7 +210,7 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 }
 
 
-//计算出蛇下个位置每个节点的坐标  
+//计算出蛇下个位置每个节点的坐标及判断赢的条件
 void Game::gameLogic(float dt)  
 {     
 	bool haveEat = false;
@@ -217,7 +220,9 @@ void Game::gameLogic(float dt)
 	marsSnake->BodyMove();
 
 	earthSnake->HeadMove();
-	marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
+	winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
+
+	
 
 	haveEat = earthSnake->eat(sFood);
 	createFood(earthSnake,marsSnake,haveEat);
@@ -233,19 +238,39 @@ void Game::gameLogic(float dt)
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
 
-	this->draw(earthSnake,marsSnake,sFood);   
+	this->draw(earthSnake,marsSnake,sFood);
+
+	//赢的条件
+	if(winFlag)
+	{
+		this->unscheduleAllSelectors();
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+		CCDirector::sharedDirector()->
+			CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
+		winFlag = false;
+		
+		return;
+	}
 }
 
+//输了的条件
 void Game::judgeOver()
 {
 	//撞墙
 	if(earthSnake->snakeHead->col >= 10 || earthSnake->snakeHead->col < 0 || earthSnake->snakeHead->row < 0 || earthSnake->snakeHead->row >= 10)
-		CCDirector::sharedDirector()->end();
+	{
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+		//this->~CCLayer();
+		CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+	}
 	//撞自己
 	for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
 	{  
 		if((earthSnake->snakeHead->col == earthSnake->snakeBody[i]->col) && (earthSnake->snakeHead->row == earthSnake->snakeBody[i]->row))
-			CCDirector::sharedDirector()->end();
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+		}
 	}
 	//撞火星蛇
 	vector<SnakeNode*> huoBody = marsSnake->snakeBody;
@@ -253,7 +278,10 @@ void Game::judgeOver()
 	for(unsigned int i=0;i<huoBody.size();i++)
 	{  
 		if((earthSnake->snakeHead->col == huoBody[i]->col) && (earthSnake->snakeHead->row == huoBody[i]->row))
-			CCDirector::sharedDirector()->end();
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+		}
 	}
 }
 

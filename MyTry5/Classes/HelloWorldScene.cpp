@@ -138,10 +138,10 @@ bool HelloWorld::init()
     this->addChild(pSprite2, 0);
 	
 	//添加一个怪物,蛇
-	pSprite = CCSprite::create("p6.png");
+	pSprite = CCSprite::create("p4.png");
 	CC_BREAK_IF(! pSprite);
-	pSprite->setPosition(ccp(250,20));
-	CCAction* move = CCMoveTo::create(2.0f,ccp(100,20));
+	pSprite->setPosition(ccp(265,30));
+	CCAction* move = CCMoveTo::create(2.0f,ccp(115,30));
 	pSprite->runAction(move);
 	this->addChild(pSprite);
 

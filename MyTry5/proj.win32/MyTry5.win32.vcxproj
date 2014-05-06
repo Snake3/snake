@@ -122,20 +122,18 @@
     </Midl>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\..\..\..\file\Resources\p7.png" />
     <None Include="..\Resources\CloseNormal.png" />
     <None Include="..\Resources\CloseSelected.png" />
     <None Include="..\Resources\grid5.jpg" />
     <None Include="..\Resources\HelloWorld.png" />
+    <None Include="..\Resources\losebg.jpg" />
     <None Include="..\Resources\Projectile.png" />
+    <None Include="..\Resources\winbg.png" />
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\back.png" />
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\background1.jpg" />
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\grid.jpg" />
     <None Include="C:\Users\WGC\Desktop\Down.png" />
     <None Include="C:\Users\WGC\Desktop\Left.png" />
-    <None Include="C:\Users\WGC\Desktop\MyTry5\Resources\p5.png" />
-    <None Include="C:\Users\WGC\Desktop\p6.png" />
-    <None Include="C:\Users\WGC\Desktop\p9.png" />
     <None Include="C:\Users\WGC\Desktop\Right.png" />
     <None Include="C:\Users\WGC\Desktop\select.png" />
     <None Include="C:\Users\WGC\Desktop\Up.png" />
@@ -152,12 +150,14 @@
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="EarthSnake.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="LoseGame.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MarsSnake.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeNode.h" />
     <ClInclude Include="SpeedSelect.h" />
+    <ClInclude Include="WinBattle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
@@ -165,11 +165,13 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="EarthSnake.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="LoseGame.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MarsSnake.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeNode.cpp" />
     <ClCompile Include="SpeedSelect.cpp" />
+    <ClCompile Include="WinBattle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

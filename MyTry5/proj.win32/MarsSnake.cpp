@@ -59,7 +59,7 @@ bool MarsSnake::eat(SnakeNode* sFood)
 	return haveEat;
 }
 
-void MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
+bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 {
 	#if 0
 //火星蛇头的移动方向,曼哈顿距离,左右移动优先，bug：穿过蛇身体
@@ -167,10 +167,7 @@ void MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			{	
 				//c = b;
 				CloseList.push_back(adj[b]);
-				if(isContain(CloseList,pu) && isContain(CloseList,pd) &&isContain(CloseList,pl) &&isContain(CloseList,pr))
-				{
-					exit(1);
-				}
+				
 				adj.erase(adj.begin() + b);
 				adjSize--;
 			}
@@ -180,6 +177,11 @@ void MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			}
 		}
 		
+		if(isContain(CloseList,pu) && isContain(CloseList,pd) &&isContain(CloseList,pl) &&isContain(CloseList,pr))
+		{
+			return true;
+			//exit(1);
+		}
 		OpenList.insert(OpenList.end(),adj.begin(),adj.end());
 
 		
@@ -295,6 +297,7 @@ void MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		snakeHead->row = p->row;
 
 	}
+	return false;
 	//p = pList[0];
 	//snakeHead->col = p->col;
 	//snakeHead->row = p->row;
