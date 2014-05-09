@@ -16,6 +16,10 @@ public:
 	void HeadMove();
 	bool MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);
+	void addCloseList();
+private:
+	vector<SnakeNode*> CloseList;
+	
 };
 
 #endif

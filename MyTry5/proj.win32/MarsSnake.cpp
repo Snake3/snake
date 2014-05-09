@@ -5,12 +5,88 @@
 
 //using namespace cocos2d;
 
+vector<SnakeNode*> barriers;
+
 MarsSnake::MarsSnake()
 {
 	snakeHead = new SnakeNode();
 }
 
 void MarsSnake::HeadMove(){}
+
+//石头、仙人掌等障碍物的添加
+void MarsSnake::addCloseList()
+{	//16个坐标值
+	SnakeNode *point1 = new SnakeNode();
+	point1->row = 13;
+	point1->col = 12;
+	CloseList.push_back(point1);
+	SnakeNode *point2 = new SnakeNode();
+	point2->row = 13;
+	point2->col = 11;
+	CloseList.push_back(point2);
+	SnakeNode *point3 = new SnakeNode();
+	point3->row = 14;
+	point3->col = 12;
+	CloseList.push_back(point3);
+	SnakeNode *point4 = new SnakeNode();
+	point4->row = 14;
+	point4->col = 11;
+	CloseList.push_back(point4);
+	SnakeNode *point5 = new SnakeNode();
+	point5->row = 15;
+	point5->col = 12;
+	CloseList.push_back(point5);
+	SnakeNode *point6 = new SnakeNode();
+	point6->row = 15;
+	point6->col = 11;
+	CloseList.push_back(point6);
+	SnakeNode *point7 = new SnakeNode();
+	point7->row = 18;
+	point7->col = 7;
+	CloseList.push_back(point7);
+	SnakeNode *point8 = new SnakeNode();
+	point8->row = 19;
+	point8->col = 7;
+	CloseList.push_back(point8);
+	SnakeNode *point9 = new SnakeNode();
+	point9->row = 20;
+	point9->col = 7;
+	CloseList.push_back(point9);
+	SnakeNode *point10 = new SnakeNode();
+	point10->row = 18;
+	point10->col = 8;
+	CloseList.push_back(point10);
+	SnakeNode *point11 = new SnakeNode();
+	point11->row = 19;
+	point11->col = 8;
+	CloseList.push_back(point11);
+	SnakeNode *point12 = new SnakeNode();
+	point12->row = 20;
+	point12->col = 8;
+	CloseList.push_back(point12);
+	SnakeNode *point13 = new SnakeNode();
+	point13->row = 3;
+	point13->col = 8;
+	CloseList.push_back(point13);
+	SnakeNode *point14 = new SnakeNode();
+	point14->row = 7;
+	point14->col = 10;
+	CloseList.push_back(point14);
+	SnakeNode *point15 = new SnakeNode();
+	point15->row = 6;
+	point15->col = 5;
+	CloseList.push_back(point15);
+	SnakeNode *point16 = new SnakeNode();
+	point16->row = 18;
+	point16->col = 2;
+	CloseList.push_back(point16);
+
+	for(int i = 1; i <= 16; i++)
+	{
+		barriers.push_back(CloseList[CloseList.size() - i]);
+	}
+}
 
 bool MarsSnake::eat(SnakeNode* sFood)
 {
@@ -61,38 +137,8 @@ bool MarsSnake::eat(SnakeNode* sFood)
 
 bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 {
-	#if 0
-//火星蛇头的移动方向,曼哈顿距离,左右移动优先，bug：穿过蛇身体
-	if ((snakeHead->row)!=(sFood->row))
-	{ 
-		if(sFood->row < snakeHead->row)
-		{	//食物在蛇头左边
-			snakeHead->row--;
-			snakeHead->dir=LEFT;
-		}
-		else if(sFood->row > snakeHead->row)
-		{	//食物在蛇头右边
-			snakeHead->row++;
-			snakeHead->dir=RIGHT;
-		}
-	}  
-	else if ((snakeHead->col!=sFood->col))
-	{
-		if(sFood->col < snakeHead->col)
-		{	//食物在蛇头下方
-			snakeHead->col--;
-			snakeHead->dir=DOWN;
-		}
-		if(sFood->col > snakeHead->col)
-		{	//食物在蛇头上方
-			snakeHead->col++;
-			snakeHead->dir=UP;
-		} 
-	}  
-	#endif
-
 	//AStar算法实现曼哈顿距离
-	vector<SnakeNode*> OpenList, CloseList;
+	vector<SnakeNode*> OpenList;
 	//当前节点p及其相邻节点
 	SnakeNode *p = new SnakeNode();
 
@@ -110,6 +156,7 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 	tanchiSnake.insert(tanchiSnake.begin(),snakeBody.begin(),snakeBody.end());
 
 	CloseList = tanchiSnake;
+	this->addCloseList();
 
 	//p = aHead;
 	//p->GValue = 0;
@@ -134,20 +181,12 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		pr->col = p->col;
 
 		pu->HValue = abs(pu->col - sFood->col) + abs(pu->row - sFood->row);
-		//pu->GValue = p->GValue + 1;
-		//pu->FValue = pu->HValue + pu->GValue;
 		pu->dir = UP;
 		pd->HValue = abs(pd->col - sFood->col) + abs(pd->row - sFood->row);
-		//pd->GValue = p->GValue + 1;
-		//pd->FValue = pd->HValue + pd->GValue;
 		pd->dir = DOWN;
 		pl->HValue = abs(pl->col - sFood->col) + abs(pl->row - sFood->row);
-		//pl->GValue = p->GValue + 1;
-		//pl->FValue = pl->GValue + pl->HValue;
 		pl->dir = LEFT;
 		pr->HValue = abs(pr->col - sFood->col) + abs(pr->row - sFood->row);
-		//pr->GValue = p->GValue + 1;
-		//pr->FValue = pr->GValue + pr->HValue;
 		pr->dir = RIGHT;
 
 		//相邻节点放入OpenList中
@@ -163,7 +202,7 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		unsigned int adjSize = 4;
 		for(unsigned int b = 0; b < adjSize;)
 		{
-			if(adj[b]->col > 9 || adj[b]->col < 0 || adj[b]->row > 9 || adj[b]->row < 0)
+			if(adj[b]->col > 13 || adj[b]->col < 0 || adj[b]->row > 23 || adj[b]->row < 1)
 			{	
 				//c = b;
 				CloseList.push_back(adj[b]);
@@ -177,29 +216,12 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			}
 		}
 		
-		if(isContain(CloseList,pu) && isContain(CloseList,pd) &&isContain(CloseList,pl) &&isContain(CloseList,pr))
+		if(isContain(CloseList,pu) && isContain(CloseList,pd) && isContain(CloseList,pl) && isContain(CloseList,pr))
 		{
 			return true;
 			//exit(1);
 		}
-		OpenList.insert(OpenList.end(),adj.begin(),adj.end());
-
-		
-		/*//从OpenList中删除当前节点p
-		//int k = 0;
-		for(unsigned int j = 0; j < OpenList.size();)
-		{
-			if(OpenList[j]->row == p->row && OpenList[j]->col == p->col)
-			{
-				//k = j;
-				OpenList.erase(OpenList.begin() + j);
-			}
-			else
-			{
-				j++;
-			}
-		}*/
-		
+		OpenList.insert(OpenList.end(),adj.begin(),adj.end());		
 
 		CloseList.push_back(p);
 		
@@ -233,7 +255,7 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		
 		
 
-		int smallest=100,temp = 0;
+		int smallest=900,temp = 0;
 		for(unsigned int k = 0; k < adjSize; k++)
 		{
 			smallest = min(smallest,adj[k]->HValue);
@@ -245,23 +267,12 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 				temp = c;
 				break;
 			}
-			/*
-			for(; m < OpenList.size(); m++)
-			{
-				if(adj[c]->col == OpenList[m]->col && adj[c]->row == OpenList[m]->row)
-					m = c;
-			}
-			*/
 		}
 		
 		
 		
 		while(isContain(CloseList,adj[temp]))
 		{
-			/*if(adjSize < 1)
-			{
-				CCDirector::sharedDirector()->end();
-			}*/
 			
 			for(unsigned int adjLength = 0; adjLength < adjSize;)
 			{
@@ -295,6 +306,7 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		//pList.push_back(p);
 		snakeHead->col = p->col;
 		snakeHead->row = p->row;
+		snakeHead->dir = p->dir;
 
 	}
 	return false;

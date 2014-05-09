@@ -33,9 +33,6 @@
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\back.png">
       <Filter>resource</Filter>
     </None>
-    <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\background1.jpg">
-      <Filter>resource</Filter>
-    </None>
     <None Include="..\Resources\grid5.jpg">
       <Filter>resource</Filter>
     </None>
@@ -66,7 +63,19 @@
     <None Include="..\Resources\winbg.png">
       <Filter>resource</Filter>
     </None>
-    <None Include="..\Resources\losebg.jpg">
+    <None Include="..\Resources\pause2.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\pause2Selected.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\play2.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\play2Selected.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\try.png">
       <Filter>resource</Filter>
     </None>
   </ItemGroup>

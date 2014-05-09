@@ -126,11 +126,14 @@
     <None Include="..\Resources\CloseSelected.png" />
     <None Include="..\Resources\grid5.jpg" />
     <None Include="..\Resources\HelloWorld.png" />
-    <None Include="..\Resources\losebg.jpg" />
+    <None Include="..\Resources\pause2.png" />
+    <None Include="..\Resources\pause2Selected.png" />
+    <None Include="..\Resources\play2.png" />
+    <None Include="..\Resources\play2Selected.png" />
     <None Include="..\Resources\Projectile.png" />
+    <None Include="..\Resources\try.png" />
     <None Include="..\Resources\winbg.png" />
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\back.png" />
-    <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\background1.jpg" />
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\grid.jpg" />
     <None Include="C:\Users\WGC\Desktop\Down.png" />
     <None Include="C:\Users\WGC\Desktop\Left.png" />

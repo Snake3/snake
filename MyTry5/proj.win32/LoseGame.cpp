@@ -30,43 +30,20 @@ bool LoseGame::init()
 	{
 		CC_BREAK_IF(! CCLayer::init());
 
-		ccColor3B color = ccc3(225, 0, 200);
-
-		CCSprite* pSprite = CCSprite::create("losebg.jpg");
-		CC_BREAK_IF(!pSprite);
+		CCSprite* pSprite5 = CCSprite::create("losebg.png");
+		CC_BREAK_IF(!pSprite5);
 		CCSize size = CCDirector::sharedDirector()->getWinSize();
-		pSprite->setPosition(ccp(size.width/2, size.height/2));
-		this->addChild(pSprite);
+		pSprite5->setPosition(ccp(size.width/2, size.height/2));
+		this->addChild(pSprite5);
 
-		auto labelText = CCLabelTTF::create("Danger!!!", "宋体", 20); 
-		labelText->setColor(color);
-		labelText->setPosition(ccp(220,270));
-		pSprite->addChild(labelText);
+		CCMenuItemImage *pTryItem = CCMenuItemImage::create("try.png","try.png",this,menu_selector(LoseGame::menuCloseCallback));
+		pTryItem->setTag(1);
+		pTryItem->setPosition(ccp(224,98)); 
 
-		auto labelText2 = CCLabelTTF::create("You want to:", "宋体", 18); 
-		labelText2->setPosition(ccp(396,95));
-		pSprite->addChild(labelText2);
-
-		auto labelBack = CCLabelTTF::create("Save the Earth", "宋体", 18);
-		auto uiStart = CCMenuItemLabel::create(labelBack, this, menu_selector(LoseGame::menuCloseCallback)); 
-		uiStart->setTag(1); 
-		uiStart->setPosition(ccp(396,75));
-
-		auto menu = CCMenu::create(uiStart, NULL); 
+		auto menu = CCMenu::create(pTryItem, NULL); 
 		menu->setPosition(CCPointZero); 
 		this->addChild(menu);
 		
-		/*
-		auto labelLeave = CCLabelTTF::create("Move to Mars", "宋体", 18);
-		auto uiExit = CCMenuItemLabel::create(labelLeave, this, menu_selector(LoseGame::menuCloseCallback)); 
-		uiStart->setTag(2); 
-		uiStart->setPosition(ccp(396,75));
-		
-		auto menu2 = CCMenu::create(uiExit, NULL); 
-		menu2->setPosition(CCPointZero); 
-		this->addChild(menu2); 
-		*/
-
 		bRet = true;
 	} while (0);
 
@@ -76,7 +53,7 @@ bool LoseGame::init()
 void LoseGame::menuCloseCallback(CCObject* pSender)
 {
 	//C++形式的强制类型转换
-	int i = dynamic_cast<CCMenuItemLabel*>(pSender)->getTag();
+	int i = dynamic_cast<CCMenuItemImage*>(pSender)->getTag();
 	switch (i) 
 	{ 
 	case 1: 

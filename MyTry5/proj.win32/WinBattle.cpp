@@ -38,28 +38,28 @@ bool WinBattle::init()
 		pSprite->setPosition(ccp(size.width/2, size.height/2));
 		this->addChild(pSprite);
 
-		auto labelText = CCLabelTTF::create("You win!!!", "宋体", 20); 
+		auto labelText = CCLabelTTF::create("You win!!!", "宋体", 24); 
 		labelText->setColor(color);
-		labelText->setPosition(ccp(220,270));
+		labelText->setPosition(ccp(380,380));
 		pSprite->addChild(labelText);
 
 		auto labelText2 = CCLabelTTF::create("Next to:", "宋体", 18); 
 		labelText2->setColor(color);
-		labelText2->setPosition(ccp(220,240));
+		labelText2->setPosition(ccp(380,340));
 		pSprite->addChild(labelText2);
 
 		auto labelBack = CCLabelTTF::create("Try again", "宋体", 18);
 		labelBack->setColor(color);
 		auto uiStart = CCMenuItemLabel::create(labelBack, this, menu_selector(WinBattle::menuCloseCallback)); 
 		uiStart->setTag(1); 
-		uiStart->setPosition(ccp(220,220));
+		uiStart->setPosition(ccp(380,312));
 
 		auto menu = CCMenu::create(uiStart, NULL); 
 		menu->setPosition(CCPointZero); 
 		this->addChild(menu);
 
 		CCMenuItemImage *winImage = CCMenuItemImage::create("win.png","win.png");
-		winImage->setPosition(ccp(230, 180));
+		winImage->setPosition(ccp(390, 255));
 		pSprite->addChild(winImage);
 
 		bRet = true;

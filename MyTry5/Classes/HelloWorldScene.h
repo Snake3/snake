@@ -2,9 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
-
 #include "Box2D/Box2D.h"
-
 #include "SimpleAudioEngine.h"
 
 class HelloWorld : public cocos2d::CCLayer
@@ -19,13 +17,8 @@ public:
     // a selector callback
     void menuCloseCallback(CCObject* pSender);
 
-	void responseFunc(CCObject* obj);
-
     // implement the "static node()" method manually
     CREATE_FUNC(HelloWorld);
-private:
-	//Éß
-	cocos2d::CCSprite *pSprite;
 };
 
 #endif  // __HELLOWORLD_SCENE_H__

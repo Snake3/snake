@@ -25,7 +25,7 @@ bool SpeedSelect::init()
 	//背景网格
 	CCSprite* bg = CCSprite::create("Background.png");
 	//位置以图片中心为准
-	bg->setPosition(ccp(240,160));
+	bg->setPosition(ccp(400,240));
 	this->addChild(bg);
 
 	ccColor3B color = ccc3(40, 240, 20);
@@ -38,20 +38,20 @@ bool SpeedSelect::init()
 	labelLow->setColor(color);
 
 	CCSprite* select = CCSprite::create("select.png");
-	select->setPosition(ccp(202,192));
+	select->setPosition(ccp(375,291));
 	this->addChild(select);
 
 	auto uiHigh = CCMenuItemLabel::create(labelHigh, this, menu_selector(SpeedSelect::menuCloseCallback)); 
 	uiHigh->setTag(1); 
-	uiHigh->setPosition(ccp(125,150));
+	uiHigh->setPosition(ccp(300,258));
 
 	auto uiMiddle = CCMenuItemLabel::create(labelMiddle, this, menu_selector(SpeedSelect::menuCloseCallback)); 
 	uiMiddle->setTag(2); 
-	uiMiddle->setPosition(ccp(215,150));
+	uiMiddle->setPosition(ccp(390,258));
 
 	auto uiLow = CCMenuItemLabel::create(labelLow, this, menu_selector(SpeedSelect::menuCloseCallback)); 
 	uiLow->setTag(3); 
-	uiLow->setPosition(ccp(291,150));
+	uiLow->setPosition(ccp(480,258));
 
 	auto menu = CCMenu::create(uiHigh,uiMiddle,uiLow, NULL); 
 	menu->setPosition(CCPointZero); 
@@ -66,10 +66,10 @@ void SpeedSelect::menuCloseCallback(CCObject* pSender)
 	switch (i) 
 	{ 
 	case 1: 
-		speed = 0.4f;
+		speed = 0.3f;
 		break; 
 	case 2: 
-		speed = 0.7f;
+		speed = 0.6f;
 		break; 
 	case 3: 
 		speed = 1.0f;

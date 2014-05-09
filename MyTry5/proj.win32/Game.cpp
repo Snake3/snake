@@ -8,6 +8,7 @@ using namespace cocos2d;
 
 int direction = 1;					//初始化方向
 extern float speed;
+extern vector<SnakeNode*> barriers;
 bool winFlag = false;
 
 SnakeNode *sFood = new SnakeNode();	//食物节点初始化
@@ -32,60 +33,37 @@ CCScene* Game::scene()
 bool Game::init()
 {
 	//背景网格
-	CCSprite* bg = CCSprite::create("grid5.jpg");
+	bg = CCSprite::create("grid5.jpg");
 	//位置以图片中心为准
-	bg->setPosition(ccp(161,160));
+	bg->setPosition(ccp(400,240));
 	this->addChild(bg);
 
-	CCSize size = CCDirector::sharedDirector()->getWinSize();
+	CCSize size = CCDirector::sharedDirector()->getWinSize();	
 
-	//创建文字按钮 
-	auto labelResume = CCLabelTTF::create("Resume", "宋体", 18); 
-	auto labelPause = CCLabelTTF::create("Pause", "宋体", 18); 
-	auto labelBack = CCLabelTTF::create("Main Menu", "宋体", 18); 
+	CCMenuItemImage *pExitItem = CCMenuItemImage::create("exit2.png","exit2Selected.png",this,menu_selector(Game::responseFunc));
+	pExitItem->setTag(11);
+	pExitItem->setPosition(ccp(35,436)); 
 
-	//方向键
-	CCMenuItemImage *pUpItem = CCMenuItemImage::create("Up.png","UpSelected.png",this,menu_selector(Game::setDirection) );
-	CCMenuItemImage *pDownItem = CCMenuItemImage::create("Down.png","DownSelected.png",this,menu_selector(Game::setDirection) );
-	CCMenuItemImage *pLeftItem = CCMenuItemImage::create("Left.png","LeftSelected.png",this,menu_selector(Game::setDirection) );
-	CCMenuItemImage *pRightItem = CCMenuItemImage::create("Right.png","RightSelected.png",this,menu_selector(Game::setDirection) );
+	CCMenuItemImage *pPlayItem = CCMenuItemImage::create("play2.png","play2Selected.png",this,menu_selector(Game::responseFunc));
+	pPlayItem->setTag(12);
+	pPlayItem->setPosition(ccp(120,436));
 
-	auto uiTry = CCMenuItemLabel::create(labelResume, this, menu_selector(Game::responseFunc)); 
-    uiTry->setTag(11); 
-	uiTry->setPosition(ccp(size.width-90,250)); 
-      
-    auto uiPause = CCMenuItemLabel::create(labelPause, this, menu_selector(Game::responseFunc)); 
-    uiPause->setTag(12); 
-    uiPause->setPosition(ccp(size.width-90,230)); 
-      
-    auto uiBack = CCMenuItemLabel::create(labelBack, this, menu_selector(Game::menuCloseCallback)); 
-    uiBack->setTag(13); 
-    uiBack->setPosition(ccp(size.width-90,210)); 	
-      
-	pUpItem->setTag(1);
-	pUpItem->setPosition(ccp(size.width-80,150)); 
-	
-	pDownItem->setTag(2);
-	pDownItem->setPosition(ccp(size.width-80,70)); 
+	CCMenuItemImage *pPauseItem = CCMenuItemImage::create("pause2.png","pause2Selected.png",this,menu_selector(Game::responseFunc));
+	pPauseItem->setTag(13);
+	pPauseItem->setPosition(ccp(168,436));
 
-	pLeftItem->setTag(3);
-	pLeftItem->setPosition(ccp(size.width-120,110)); 
+	auto menu = CCMenu::create(pExitItem, pPlayItem, pPauseItem, NULL); 
+	menu->setPosition(CCPointZero); 
+	bg->addChild(menu); 
 
-	pRightItem->setTag(4);
-	pRightItem->setPosition(ccp(size.width-40,110)); 
-
-    auto menu = CCMenu::create(uiTry,uiPause,uiBack,pUpItem,pDownItem,pLeftItem,pRightItem, NULL); 
-    menu->setPosition(CCPointZero); 
-    this->addChild(menu); 
-	
-	//this->schedule(schedule_selector(Game::myGameLogic),1);
+	this->initSnakeBody();
 	this->schedule(schedule_selector(Game::gameLogic),speed);
 	
-	if(speed == 0.4f)
+	if(speed == 0.3f)
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("high.mp3",true);
 	}
-	else if(speed == 0.7f)
+	else if(speed == 0.6f)
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("middle.mp3",true);
 	}
@@ -94,6 +72,10 @@ bool Game::init()
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("low.mp3",true);
 	}
 
+	//触摸屏幕响应事件
+	this->setTouchEnabled(true);//使layer具有响应触摸事件的能力
+	CCDirector::sharedDirector()->getTouchDispatcher()
+		->addTargetedDelegate(this, 0, true);
     return true;
 }
 
@@ -106,28 +88,22 @@ void Game::menuCloseCallback(CCObject* pSender)
 //进入游戏后的菜单响应
 void Game::responseFunc(CCObject* obj)
 {	
-	int i = dynamic_cast<CCMenuItemLabel*>(obj)->getTag();
+	int i = dynamic_cast<CCMenuItemImage*>(obj)->getTag();
 	switch (i) 
 	{ 
 	case 11: 
-		CCDirector::sharedDirector() ->resume();
+		CCDirector::sharedDirector()->end();
 		break; 
 	case 12: 
-		pauseGame(obj);
+		CCDirector::sharedDirector()->resume();
 		break; 
 	case 13: 
-		CCDirector::sharedDirector()->end();
+		CCDirector::sharedDirector()->pause();  
 		break;
 	default: 
 		break; 
 	} 
-}
-
-//游戏暂停
-void Game::pauseGame(CCObject* sender)    
-{    
-	CCDirector::sharedDirector() ->pause();     
-}    
+}   
 
 //清除、消失的函数
 void Game::myDefine(CCNode* who)
@@ -136,6 +112,7 @@ void Game::myDefine(CCNode* who)
 	who->removeFromParentAndCleanup(true);
 }
 
+#if 0
 //设置贪食蛇的方向
 void Game::setDirection(CCObject* obj)
 {
@@ -181,26 +158,35 @@ void Game::setDirection(CCObject* obj)
 		break;
 	}
 }
+#endif
 
 void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	bool flag = true;
 	srand((unsigned)time(0));
 	if(haveEat){
-	sFood->row = rand()%10;  
-	sFood->col = rand()%10;
+	sFood->row = rand()%23 + 1;  
+	sFood->col = rand()%14;
 	while(flag){
 			for(unsigned int i=0;i<marsSnake->snakeBody.size();i++){
 					if(((marsSnake->snakeBody[i]->row == sFood->row)&&(marsSnake->snakeBody[i]->col == sFood->col))||((marsSnake->snakeHead->row == sFood->row)&&(marsSnake->snakeHead->col == sFood->col))){
-						sFood->row = rand()%10;
-						sFood->col = rand()%10;
+						sFood->row = rand()%23 + 1;
+						sFood->col = rand()%14;
 						i = 0;
 					}
 				}
 				flag = false;
 				for(unsigned int i=0;i<earthSnake->snakeBody.size();i++){
 					if(((earthSnake->snakeBody[i]->row == sFood->row)&&(earthSnake->snakeBody[i]->col == sFood->col))||((earthSnake->snakeHead->row == sFood->row)&&(earthSnake->snakeHead->col == sFood->col))){
-						sFood->row = rand()%10;
-						sFood->col = rand()%10;
+						sFood->row = rand()%23 + 1;
+						sFood->col = rand()%14;
+						i = 0;
+					}
+				}
+				flag = false;
+				for(unsigned int i=0;i<barriers.size();i++){
+					if(((barriers[i]->row == sFood->row)&&(barriers[i]->col == sFood->col))){
+						sFood->row = rand()%23 + 1;
+						sFood->col = rand()%14;
 						i = 0;
 						flag = true;
 					}
@@ -209,10 +195,11 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	}
 }
 
-
 //计算出蛇下个位置每个节点的坐标及判断赢的条件
 void Game::gameLogic(float dt)  
 {     
+	
+
 	bool haveEat = false;
 	earthSnake->snakeHead->dir = direction;
 
@@ -245,8 +232,8 @@ void Game::gameLogic(float dt)
 	{
 		this->unscheduleAllSelectors();
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-		CCDirector::sharedDirector()->
-			CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
+		this->restart();
+		CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
 		winFlag = false;
 		
 		return;
@@ -257,10 +244,10 @@ void Game::gameLogic(float dt)
 void Game::judgeOver()
 {
 	//撞墙
-	if(earthSnake->snakeHead->col >= 10 || earthSnake->snakeHead->col < 0 || earthSnake->snakeHead->row < 0 || earthSnake->snakeHead->row >= 10)
+	if(earthSnake->snakeHead->col >= 14 || earthSnake->snakeHead->col < 0 || earthSnake->snakeHead->row < 1 || earthSnake->snakeHead->row >= 24)
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-		//this->~CCLayer();
+		this->restart();
 		CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 	}
 	//撞自己
@@ -269,6 +256,7 @@ void Game::judgeOver()
 		if((earthSnake->snakeHead->col == earthSnake->snakeBody[i]->col) && (earthSnake->snakeHead->row == earthSnake->snakeBody[i]->row))
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+			this->restart();
 			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 		}
 	}
@@ -280,9 +268,58 @@ void Game::judgeOver()
 		if((earthSnake->snakeHead->col == huoBody[i]->col) && (earthSnake->snakeHead->row == huoBody[i]->row))
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+			this->restart();
 			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 		}
 	}
+	//撞障碍物
+	for(unsigned int i=0;i<barriers.size();i++)
+	{  
+		if((earthSnake->snakeHead->col == barriers[i]->col) && (earthSnake->snakeHead->row == barriers[i]->row))
+		{
+			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+			this->restart();
+			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+		}
+	}
+}
+
+//初始化蛇的身体，4个节点
+void Game::initSnakeBody()
+{
+	SnakeNode *marsSnakeBody1 = new SnakeNode();
+	marsSnakeBody1->row = 2;
+	marsSnakeBody1->col = 3;
+	marsSnake->snakeBody.push_back(marsSnakeBody1);
+	SnakeNode *marsSnakeBody2 = new SnakeNode();
+	marsSnakeBody2->row = 2;
+	marsSnakeBody2->col = 2;
+	marsSnake->snakeBody.push_back(marsSnakeBody2);
+	SnakeNode *marsSnakeBody3 = new SnakeNode();
+	marsSnakeBody3->row = 2;
+	marsSnakeBody3->col = 1;
+	marsSnake->snakeBody.push_back(marsSnakeBody3);
+	SnakeNode *marsSnakeBody4 = new SnakeNode();
+	marsSnakeBody4->row = 2;
+	marsSnakeBody4->col = 0;
+	marsSnake->snakeBody.push_back(marsSnakeBody4);
+
+	SnakeNode *earthSnakeBody1 = new SnakeNode();
+	earthSnakeBody1->row = 9;
+	earthSnakeBody1->col = 3;
+	earthSnake->snakeBody.push_back(earthSnakeBody1);
+	SnakeNode *earthSnakeBody2 = new SnakeNode();
+	earthSnakeBody2->row = 9;
+	earthSnakeBody2->col = 2;
+	earthSnake->snakeBody.push_back(earthSnakeBody2);
+	SnakeNode *earthSnakeBody3 = new SnakeNode();
+	earthSnakeBody3->row = 9;
+	earthSnakeBody3->col = 1;
+	earthSnake->snakeBody.push_back(earthSnakeBody3);
+	SnakeNode *earthSnakeBody4 = new SnakeNode();
+	earthSnakeBody4->row = 9;
+	earthSnakeBody4->col = 0;
+	earthSnake->snakeBody.push_back(earthSnakeBody4);
 }
 
 //绘制蛇和绘制食物
@@ -296,14 +333,14 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 	//绘制蛇头  
 	CCSprite *head=CCSprite::create("p9.png");
 	head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
-	this->addChild(head);
+	bg->addChild(head,2);
 	head->runAction(seq);
 
 	
 	//火星蛇头
 	CCSprite *ahead=CCSprite::create("p6.png");
 	ahead->setPosition(ccp(marsSnake->snakeHead->row*32+16,marsSnake->snakeHead->col*32+16));
-	this->addChild(ahead);
+	bg->addChild(ahead,2);
 	ahead->runAction(disahead);
 
 
@@ -311,7 +348,7 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 	CCAction *disFood=CCSequence::create(delay,disappear,NULL);
 	CCSprite *food=CCSprite::create("p8.png");
 	food->setPosition(ccp(sFood->row*32+16,sFood->col*32+16));
-	this->addChild(food);
+	bg->addChild(food,2);
 	food->runAction(disFood);
 
 	//绘制身体  
@@ -320,7 +357,7 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *body=CCSprite::create("p5.png");
 		body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
-		this->addChild(body);
+		bg->addChild(body,1);
 		body->runAction(disBody);
 	}  
 
@@ -330,8 +367,85 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 		CCAction *disaBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *abody=CCSprite::create("p7.png");
 		abody->setPosition(ccp(marsSnake->snakeBody[i]->row*32+16,marsSnake->snakeBody[i]->col*32+16));
-		this->addChild(abody);
+		bg->addChild(abody,1);
 		abody->runAction(disaBody);
 	}
 
+}
+
+void Game::restart()
+{
+	direction = 1;
+	earthSnake->snakeBody.clear();
+	earthSnake->snakeHead->col = 5;
+	earthSnake->snakeHead->row = 9;
+	marsSnake->snakeBody.clear();
+	marsSnake->snakeHead->col = 2;
+	marsSnake->snakeHead->row = 5;
+}
+
+bool Game::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent)
+{
+	return true;
+}
+
+void Game::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent)
+{
+	return;
+}
+
+//触摸屏幕来改变方向
+void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
+{
+	CCPoint touchPos = pTouch->getLocation();
+
+	CCPoint origPos;
+	origPos.setPoint(earthSnake->snakeHead->row * 32 + 16, earthSnake->snakeHead->col * 32 + 16);
+	CCPoint diff = ccpSub(touchPos,origPos);
+
+	if(abs(diff.x) > abs(diff.y))
+	{
+		if(diff.x > 0)
+		{//Right
+			if((earthSnake->snakeHead->dir != RIGHT) && (earthSnake->snakeHead->dir != LEFT))
+			{
+				//this->unscheduleAllSelectors();
+				direction = RIGHT;
+				this->schedule(schedule_selector(Game::gameLogic),speed);
+			}
+		}
+		else
+		{//Left
+			if((earthSnake->snakeHead->dir != LEFT) && (earthSnake->snakeHead->dir != RIGHT))
+			{
+				//this->unscheduleAllSelectors();
+				direction = LEFT;
+				this->schedule(schedule_selector(Game::gameLogic),speed);
+			}
+		}
+	}
+	else
+	{
+		if(diff.y > 0)
+		{//Up
+			if((earthSnake->snakeHead->dir != UP) && (earthSnake->snakeHead->dir != DOWN))
+			{
+				//方向切换会闪是因为这个原因
+				//this->unscheduleAllSelectors();
+				direction = UP;
+				this->schedule(schedule_selector(Game::gameLogic),speed);
+			}
+		}
+		else
+		{//Down
+			if((earthSnake->snakeHead->dir != DOWN) && (earthSnake->snakeHead->dir != UP))
+			{
+				//this->unscheduleAllSelectors();
+				direction = DOWN;
+				this->schedule(schedule_selector(Game::gameLogic),speed);
+			}
+		}
+	}
+
+	return;
 }

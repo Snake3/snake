@@ -19,7 +19,7 @@ bool GameHelp::init()
 		return false; 
 	} 
 	
-	CCSprite* pSprite2 = CCSprite::create("background1.jpg");
+	CCSprite* pSprite2 = CCSprite::create("background1.png");
 	CCSize size = CCDirector::sharedDirector()->getWinSize();
     pSprite2->setPosition(ccp(size.width/2, size.height/2));
     this->addChild(pSprite2, 0);
@@ -28,7 +28,7 @@ bool GameHelp::init()
 	//创建帮助文字 
 	auto labelHelp = CCLabelTTF::create("Mouse Click and Move", "宋体", 24); 
 	labelHelp->setColor(color);
-	labelHelp->setPosition(CCPoint(210,160)); 
+	labelHelp->setPosition(CCPoint(330,270)); 
 	this->addChild(labelHelp); 
 
 	//创建返回按钮
