@@ -4,6 +4,7 @@
 #include "EarthSnake.h"
 
 using namespace cocos2d;
+int count2 = 0;
 
 EarthSnake::EarthSnake(){
 	snakeHead = new SnakeNode();
@@ -16,6 +17,9 @@ bool EarthSnake::eat(SnakeNode* sFood){
 	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
 	if(snakeHead->row == sFood->row && snakeHead->col == sFood->col) 
 	{   
+		++count2;
+		EarthSnakeScores.setEarthSnakeEatScores(count2);
+
 		haveEat = true;
 		//食物从当前位置消失，随机出现在下一个坐标  
 
@@ -83,4 +87,7 @@ void EarthSnake::HeadMove(){
 	}   
 }
 
-
+Score EarthSnake::getEarthSnakeScores()
+{
+	return EarthSnakeScores;
+}

@@ -124,6 +124,9 @@
     <ClInclude Include="WinBattle.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="Score.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -160,6 +163,9 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="WinBattle.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="Score.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

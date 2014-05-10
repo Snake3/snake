@@ -6,6 +6,7 @@
 #include "SimpleAudioEngine.h"
 #include "EarthSnake.h"
 #include "MarsSnake.h"
+#include "Score.h"
 
 //Ã¶¾Ù
 typedef enum {  
@@ -44,12 +45,17 @@ public:
 	void judgeOver();
 	void createFood(EarthSnake*,MarsSnake*,bool haveEat);
 	void restart();
+	void setMarsSnakeScores(Score);
+	void setEarthSnakeScores(Score);
 
 	bool ccTouchBegan(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
 	void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
 	void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
 private:
 	CCSprite* bg;
+	Score EarthSnakeScores, MarsSnakeScores;
+	CCMenuItemImage *pPlayItem, *pPauseItem, *pMusicONItem, *pMusicOFFItem;
+	CCLabelAtlas *label1, *label2;
 };
 
 #endif  // __HELLOWORLD_SCENE_H_

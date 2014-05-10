@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
 #include "SimpleAudioEngine.h"
+#include "Score.h"
 
 class LoseGame : public cocos2d::CCLayer
 {
@@ -21,6 +22,12 @@ public:
 
 	// implement the "static node()" method manually
 	CREATE_FUNC(LoseGame);
+
+	void setEarthSnakeEatCount(int);
+	int getEarthSnakeEatCount();
+private:
+	cocos2d::CCLabelTTF* labelText1;
+	int EarthSnakeEatCount;
 };
 
 #endif

@@ -1,7 +1,9 @@
 #include "LoseGame.h"
-#include "SpeedSelect.h"
+#include "HelloWorldScene.h"
 
 using namespace cocos2d;
+
+int LoseGameScore = 0;
 
 CCScene* LoseGame::scene()
 {
@@ -36,9 +38,17 @@ bool LoseGame::init()
 		pSprite5->setPosition(ccp(size.width/2, size.height/2));
 		this->addChild(pSprite5);
 
+		char a[20];
+		labelText1 = CCLabelTTF ::create();
+		labelText1->setFontName("Calibri");
+		labelText1->setFontSize(20);
+		labelText1->setString(itoa(LoseGameScore,a,10));
+		labelText1->setPosition(ccp(481,100));
+		this->addChild(labelText1);
+
 		CCMenuItemImage *pTryItem = CCMenuItemImage::create("try.png","try.png",this,menu_selector(LoseGame::menuCloseCallback));
 		pTryItem->setTag(1);
-		pTryItem->setPosition(ccp(224,98)); 
+		pTryItem->setPosition(ccp(399,27)); 
 
 		auto menu = CCMenu::create(pTryItem, NULL); 
 		menu->setPosition(CCPointZero); 
@@ -57,7 +67,7 @@ void LoseGame::menuCloseCallback(CCObject* pSender)
 	switch (i) 
 	{ 
 	case 1: 
-		CCDirector::sharedDirector()->replaceScene(SpeedSelect::scene()); 
+		CCDirector::sharedDirector()->replaceScene(HelloWorld::scene()); 
 		break; 
 		/*
 	case 2: 
@@ -67,4 +77,14 @@ void LoseGame::menuCloseCallback(CCObject* pSender)
 	default: 
 		break; 
 	} 
+}
+
+void LoseGame::setEarthSnakeEatCount(int count)
+{
+	EarthSnakeEatCount = count;
+}
+
+int LoseGame::getEarthSnakeEatCount()
+{
+	return EarthSnakeEatCount;
 }

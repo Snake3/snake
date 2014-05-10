@@ -1,5 +1,5 @@
 #include "WinBattle.h"
-#include "SpeedSelect.h"
+#include "HelloWorldScene.h"
 
 using namespace cocos2d;
 
@@ -75,7 +75,7 @@ void WinBattle::menuCloseCallback(CCObject* pSender)
 	switch (i) 
 	{ 
 	case 1: 
-		CCDirector::sharedDirector()->replaceScene(SpeedSelect::scene()); 
+		CCDirector::sharedDirector()->replaceScene(HelloWorld::scene()); 
 		break; 
 		/*
 	case 2: 

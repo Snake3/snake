@@ -5,6 +5,7 @@
 #include "SnakeNode.h"
 #include "EarthSnake.h"
 #include "Snake.h"
+#include "Score.h"
 
 using namespace cocos2d;
 
@@ -17,9 +18,10 @@ public:
 	bool MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);
 	void addCloseList();
+	Score getMarsSnakeScores();
 private:
 	vector<SnakeNode*> CloseList;
-	
+	Score MarsSnakeScores;
 };
 
 #endif

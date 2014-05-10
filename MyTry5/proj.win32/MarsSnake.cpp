@@ -6,6 +6,7 @@
 //using namespace cocos2d;
 
 vector<SnakeNode*> barriers;
+int count1 = 0;
 
 MarsSnake::MarsSnake()
 {
@@ -94,6 +95,9 @@ bool MarsSnake::eat(SnakeNode* sFood)
 	//火星蛇的碰撞检测
 	if(snakeHead->row==sFood->row&&snakeHead->col==sFood->col)
 	{
+		++count1;
+		MarsSnakeScores.setMarsSnakeEatScores(count1);
+
 		haveEat = true;
 		//食物从当前位置消失，随机出现在下一个坐标    
 
@@ -326,4 +330,9 @@ bool MarsSnake::isContain(vector<SnakeNode*> List, SnakeNode* obj)
 		}
 	}
 	return false;
+}
+
+Score MarsSnake::getMarsSnakeScores()
+{
+	return MarsSnakeScores;
 }

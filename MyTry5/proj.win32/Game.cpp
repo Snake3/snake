@@ -9,6 +9,8 @@ using namespace cocos2d;
 int direction = 1;					//初始化方向
 extern float speed;
 extern vector<SnakeNode*> barriers;
+extern int count1,count2;
+extern int LoseGameScore;
 bool winFlag = false;
 
 SnakeNode *sFood = new SnakeNode();	//食物节点初始化
@@ -44,17 +46,50 @@ bool Game::init()
 	pExitItem->setTag(11);
 	pExitItem->setPosition(ccp(35,436)); 
 
-	CCMenuItemImage *pPlayItem = CCMenuItemImage::create("play2.png","play2Selected.png",this,menu_selector(Game::responseFunc));
+	pPlayItem = CCMenuItemImage::create("play2.png","play2Selected.png",this,menu_selector(Game::responseFunc));
 	pPlayItem->setTag(12);
 	pPlayItem->setPosition(ccp(120,436));
+	pPlayItem->setVisible(false);
 
-	CCMenuItemImage *pPauseItem = CCMenuItemImage::create("pause2.png","pause2Selected.png",this,menu_selector(Game::responseFunc));
+	pPauseItem = CCMenuItemImage::create("pause2.png","pause2Selected.png",this,menu_selector(Game::responseFunc));
 	pPauseItem->setTag(13);
-	pPauseItem->setPosition(ccp(168,436));
+	pPauseItem->setPosition(ccp(120,436));
+	pPauseItem->setVisible(true);
 
-	auto menu = CCMenu::create(pExitItem, pPlayItem, pPauseItem, NULL); 
+	pMusicOFFItem = CCMenuItemImage::create("musicOFF.png","musicOFFSelected.png",this,menu_selector(Game::responseFunc));
+	pMusicOFFItem->setTag(14);
+	pMusicOFFItem->setPosition(ccp(168,436));
+	pMusicOFFItem->setVisible(false);
+
+	pMusicONItem = CCMenuItemImage::create("musicON.png","musicONSelected.png",this,menu_selector(Game::responseFunc));
+	pMusicONItem->setTag(15);
+	pMusicONItem->setPosition(ccp(168,436));
+	pMusicONItem->setVisible(true);
+
+	auto menu = CCMenu::create(pExitItem, pPlayItem, pPauseItem, pMusicOFFItem, pMusicONItem, NULL); 
 	menu->setPosition(CCPointZero); 
 	bg->addChild(menu); 
+
+	CCLabelTTF* labelText1 = CCLabelTTF ::create("Scores1:", "STKaiti", 24);
+	//CCLabelTTF* labelText = CCLabelTTF::labelWithString("YourScores:","MarkerFelt-Thin",20);
+	//labelText->setColor(color);
+	labelText1->setPosition(ccp(400,456));
+	addChild(labelText1);
+
+	//加载图片数字
+	label1 =CCLabelAtlas::create("0", "DigitalFont2.png", 15, 32, '0');
+	label1->setPosition(ccp(460, 437));
+	addChild(label1);
+
+	CCLabelTTF* labelText2 = CCLabelTTF ::create("Your Scores:", "STKaiti", 24);
+	//CCLabelTTF* labelText = CCLabelTTF::labelWithString("YourScores:","MarkerFelt-Thin",20);
+	//labelText->setColor(color);
+	labelText2->setPosition(ccp(600,456));
+	addChild(labelText2);
+
+	label2 =CCLabelAtlas::create("0", "DigitalFont1.png", 15, 31, '0');
+	label2->setPosition(ccp(690, 437));
+	addChild(label2);
 
 	this->initSnakeBody();
 	this->schedule(schedule_selector(Game::gameLogic),speed);
@@ -95,10 +130,28 @@ void Game::responseFunc(CCObject* obj)
 		CCDirector::sharedDirector()->end();
 		break; 
 	case 12: 
+		pPauseItem->setVisible(true);
+		pPlayItem->setVisible(false);
 		CCDirector::sharedDirector()->resume();
 		break; 
 	case 13: 
+		pPauseItem->setVisible(false);
+		pPlayItem->setVisible(true);
 		CCDirector::sharedDirector()->pause();  
+		break;
+	case 14: 
+		pMusicOFFItem->setVisible(false);
+		pMusicONItem->setVisible(true);
+		//音效开关失灵
+		//CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeAllEffects();
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
+		break;
+	case 15: 
+		pMusicOFFItem->setVisible(true);
+		pMusicONItem->setVisible(false);
+		//音效禁不了
+		//CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseAllEffects();
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 		break;
 	default: 
 		break; 
@@ -163,18 +216,28 @@ void Game::setDirection(CCObject* obj)
 void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	bool flag = true;
 	srand((unsigned)time(0));
+
+	//两蛇合并
+	vector<SnakeNode*> huoxingSnake, TwoSnake;
+	TwoSnake = earthSnake->snakeBody;
+	TwoSnake.push_back(earthSnake->snakeHead);
+	huoxingSnake = marsSnake->snakeBody;
+	huoxingSnake.push_back(marsSnake->snakeHead);
+	TwoSnake.insert(TwoSnake.begin(),marsSnake->snakeBody.begin(),marsSnake->snakeBody.end());
+
 	if(haveEat){
 	sFood->row = rand()%23 + 1;  
 	sFood->col = rand()%14;
 	while(flag){
-			for(unsigned int i=0;i<marsSnake->snakeBody.size();i++){
-					if(((marsSnake->snakeBody[i]->row == sFood->row)&&(marsSnake->snakeBody[i]->col == sFood->col))||((marsSnake->snakeHead->row == sFood->row)&&(marsSnake->snakeHead->col == sFood->col))){
+			for(unsigned int i=0;i<TwoSnake.size();i++){
+					if(((TwoSnake[i]->row == sFood->row)&&(TwoSnake[i]->col == sFood->col))){
 						sFood->row = rand()%23 + 1;
 						sFood->col = rand()%14;
 						i = 0;
 					}
 				}
 				flag = false;
+				/*
 				for(unsigned int i=0;i<earthSnake->snakeBody.size();i++){
 					if(((earthSnake->snakeBody[i]->row == sFood->row)&&(earthSnake->snakeBody[i]->col == sFood->col))||((earthSnake->snakeHead->row == sFood->row)&&(earthSnake->snakeHead->col == sFood->col))){
 						sFood->row = rand()%23 + 1;
@@ -183,6 +246,7 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 					}
 				}
 				flag = false;
+				*/
 				for(unsigned int i=0;i<barriers.size();i++){
 					if(((barriers[i]->row == sFood->row)&&(barriers[i]->col == sFood->col))){
 						sFood->row = rand()%23 + 1;
@@ -215,6 +279,7 @@ void Game::gameLogic(float dt)
 	createFood(earthSnake,marsSnake,haveEat);
 	if(haveEat)
 	{
+		this->setEarthSnakeScores(earthSnake->getEarthSnakeScores());
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
 	
@@ -222,6 +287,7 @@ void Game::gameLogic(float dt)
 	createFood(earthSnake,marsSnake,haveEat);
 	if(haveEat)
 	{
+		this->setMarsSnakeScores(marsSnake->getMarsSnakeScores());
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
 
@@ -248,6 +314,7 @@ void Game::judgeOver()
 	{
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
 		this->restart();
+		LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
 		CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 	}
 	//撞自己
@@ -257,6 +324,7 @@ void Game::judgeOver()
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
 			this->restart();
+			LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
 			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 		}
 	}
@@ -269,6 +337,7 @@ void Game::judgeOver()
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
 			this->restart();
+			LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
 			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 		}
 	}
@@ -279,6 +348,7 @@ void Game::judgeOver()
 		{
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
 			this->restart();
+			LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
 			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
 		}
 	}
@@ -288,37 +358,37 @@ void Game::judgeOver()
 void Game::initSnakeBody()
 {
 	SnakeNode *marsSnakeBody1 = new SnakeNode();
-	marsSnakeBody1->row = 2;
-	marsSnakeBody1->col = 3;
+	marsSnakeBody1->row = marsSnake->snakeHead->row;
+	marsSnakeBody1->col = marsSnake->snakeHead->col - 1;
 	marsSnake->snakeBody.push_back(marsSnakeBody1);
 	SnakeNode *marsSnakeBody2 = new SnakeNode();
-	marsSnakeBody2->row = 2;
-	marsSnakeBody2->col = 2;
+	marsSnakeBody2->row = marsSnake->snakeHead->row;
+	marsSnakeBody2->col = marsSnake->snakeHead->col - 2;
 	marsSnake->snakeBody.push_back(marsSnakeBody2);
 	SnakeNode *marsSnakeBody3 = new SnakeNode();
-	marsSnakeBody3->row = 2;
-	marsSnakeBody3->col = 1;
+	marsSnakeBody3->row = marsSnake->snakeHead->row;
+	marsSnakeBody3->col = marsSnake->snakeHead->col - 3;
 	marsSnake->snakeBody.push_back(marsSnakeBody3);
 	SnakeNode *marsSnakeBody4 = new SnakeNode();
-	marsSnakeBody4->row = 2;
-	marsSnakeBody4->col = 0;
+	marsSnakeBody4->row = marsSnake->snakeHead->row;
+	marsSnakeBody4->col = marsSnake->snakeHead->col - 4;
 	marsSnake->snakeBody.push_back(marsSnakeBody4);
 
 	SnakeNode *earthSnakeBody1 = new SnakeNode();
-	earthSnakeBody1->row = 9;
-	earthSnakeBody1->col = 3;
+	earthSnakeBody1->row = earthSnake->snakeHead->row;
+	earthSnakeBody1->col = earthSnake->snakeHead->col - 1;
 	earthSnake->snakeBody.push_back(earthSnakeBody1);
 	SnakeNode *earthSnakeBody2 = new SnakeNode();
-	earthSnakeBody2->row = 9;
-	earthSnakeBody2->col = 2;
+	earthSnakeBody2->row = earthSnake->snakeHead->row;
+	earthSnakeBody2->col = earthSnake->snakeHead->col - 2;
 	earthSnake->snakeBody.push_back(earthSnakeBody2);
 	SnakeNode *earthSnakeBody3 = new SnakeNode();
-	earthSnakeBody3->row = 9;
-	earthSnakeBody3->col = 1;
+	earthSnakeBody3->row = earthSnake->snakeHead->row;
+	earthSnakeBody3->col = earthSnake->snakeHead->col - 3;
 	earthSnake->snakeBody.push_back(earthSnakeBody3);
 	SnakeNode *earthSnakeBody4 = new SnakeNode();
-	earthSnakeBody4->row = 9;
-	earthSnakeBody4->col = 0;
+	earthSnakeBody4->row = earthSnake->snakeHead->row;
+	earthSnakeBody4->col = earthSnake->snakeHead->col - 4;
 	earthSnake->snakeBody.push_back(earthSnakeBody4);
 }
 
@@ -377,11 +447,17 @@ void Game::restart()
 {
 	direction = 1;
 	earthSnake->snakeBody.clear();
-	earthSnake->snakeHead->col = 5;
+	earthSnake->snakeHead->col = 4;
 	earthSnake->snakeHead->row = 9;
 	marsSnake->snakeBody.clear();
 	marsSnake->snakeHead->col = 2;
-	marsSnake->snakeHead->row = 5;
+	marsSnake->snakeHead->row = 4;
+
+	count1 = 0;
+	count2 = 0;
+	marsSnake->getMarsSnakeScores().setMarsSnakeEatScores(0);
+	earthSnake->getEarthSnakeScores().setEarthSnakeEatScores(0);
+
 }
 
 bool Game::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent)
@@ -448,4 +524,18 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 	}
 
 	return;
+}
+
+void Game::setMarsSnakeScores(Score scores)
+{
+	MarsSnakeScores = scores;
+	char b[20];
+	label1->setString(itoa(MarsSnakeScores.getMarsSnakeEatScores(),b,10));
+}
+
+void Game::setEarthSnakeScores(Score scores)
+{
+	EarthSnakeScores = scores;
+	char a[20];
+	label2->setString(itoa(EarthSnakeScores.getEarthSnakeEatScores(),a,10));
 }
