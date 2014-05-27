@@ -17,7 +17,7 @@ bool EarthSnake::eat(SnakeNode* sFood){
 	//如果蛇头的横、列位置一样，说明蛇吃到了这个食物  
 	if(snakeHead->row == sFood->row && snakeHead->col == sFood->col) 
 	{   
-		++count2;
+		count2 += (int)(sFood->foodType);
 		EarthSnakeScores.setEarthSnakeEatScores(count2);
 
 		haveEat = true;

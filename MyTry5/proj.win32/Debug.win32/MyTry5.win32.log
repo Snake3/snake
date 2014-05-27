@@ -1,20 +1,20 @@
-﻿生成启动时间为 2014/5/10 14:38:18。
-     1>项目“F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”在节点 2 上(build 个目标)。
+﻿生成启动时间为 2014/5/27 21:38:43。
+     1>项目“F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”在节点 2 上(build 个目标)。
      1>InitializeBuildStatus:
-         正在对“Debug.win32\MyTry5.win32.unsuccessfulbuild”执行 Touch 任务。
+         正在创建“Debug.win32\MyTry5.win32.unsuccessfulbuild”，因为已指定“AlwaysCreate”。
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I. /I..\Classes /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\kazmath\include" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32\OGLES" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\external" /I"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt Game.cpp
+         D:\VS2010\VC\bin\CL.exe /c /I. /I..\Classes /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\include" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\kazmath\include" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\win32" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\cocos2dx\platform\third_party\win32\OGLES" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\external" /I"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\CocosDenshion\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D STRICT /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS_DEBUG /D COCOS2D_DEBUG=1 /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc100.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt Game.cpp
          Game.cpp
-     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(533): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(867) : 参见“itoa”的声明
-     1>f:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(540): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdlib.h(867) : 参见“itoa”的声明
+     1>f:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(590): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 d:\vs2010\vc\include\stdlib.h(867) : 参见“itoa”的声明
+     1>f:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\mytry5\proj.win32\game.cpp(597): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _itoa. See online help for details.
+                 d:\vs2010\vc\include\stdlib.h(867) : 参见“itoa”的声明
        ResourceCompile:
          所有输出均为最新。
        ManifestResourceCompile:
          所有输出均为最新。
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.exe" /INCREMENTAL /NOLOGO /LIBPATH:"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\\" libcocos2d.lib libExtensions.lib opengl32.lib glew32.lib libBox2d.lib libCocosDenshion.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug.win32\MyTry5.win32.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.lib" /MACHINE:X86 Debug.win32\MyTry5.res
+         D:\VS2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.exe" /INCREMENTAL /NOLOGO /LIBPATH:"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\\" libcocos2d.lib libExtensions.lib opengl32.lib glew32.lib libBox2d.lib libCocosDenshion.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug.win32\MyTry5.win32.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.lib" /MACHINE:X86 Debug.win32\MyTry5.res
          Debug.win32\MyTry5.win32.exe.embed.manifest.res
          Debug.win32\AppDelegate.obj
          Debug.win32\GameHelp.obj
@@ -34,12 +34,12 @@
          所有输出均为最新。
        LinkEmbedManifest:
          所有输出均为最新。
-         MyTry5.win32.vcxproj -> F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.exe
+         MyTry5.win32.vcxproj -> F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\Debug.win32\MyTry5.win32.exe
        FinalizeBuildStatus:
          正在删除文件“Debug.win32\MyTry5.win32.unsuccessfulbuild”。
          正在对“Debug.win32\MyTry5.win32.lastbuildstate”执行 Touch 任务。
-     1>已完成生成项目“F:\cocos2dx\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”(build 个目标)的操作。
+     1>已完成生成项目“F:\cocos2d-2.0-x-2.0.4\cocos2d-2.0-x-2.0.4\MyTry5\proj.win32\MyTry5.win32.vcxproj”(build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:05.24
+已用时间 00:00:13.88

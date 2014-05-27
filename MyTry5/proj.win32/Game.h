@@ -42,6 +42,7 @@ public:
 
 	//计算出蛇下个位置所以节点的坐标
 	void gameLogic(float dt);
+	//void gameLogic2(float dt);
 	void judgeOver();
 	void createFood(EarthSnake*,MarsSnake*,bool haveEat);
 	void restart();

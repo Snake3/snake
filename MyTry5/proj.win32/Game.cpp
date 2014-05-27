@@ -93,6 +93,7 @@ bool Game::init()
 
 	this->initSnakeBody();
 	this->schedule(schedule_selector(Game::gameLogic),speed);
+	//this->schedule(schedule_selector(Game::gameLogic2),speed);
 	
 	if(speed == 0.3f)
 	{
@@ -215,7 +216,6 @@ void Game::setDirection(CCObject* obj)
 
 void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	bool flag = true;
-	srand((unsigned)time(0));
 
 	//两蛇合并
 	vector<SnakeNode*> huoxingSnake, TwoSnake;
@@ -226,9 +226,8 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	TwoSnake.insert(TwoSnake.begin(),marsSnake->snakeBody.begin(),marsSnake->snakeBody.end());
 
 	if(haveEat){
-	sFood->row = rand()%23 + 1;  
-	sFood->col = rand()%14;
-	while(flag){
+		sFood->generate();
+		while(flag){
 			for(unsigned int i=0;i<TwoSnake.size();i++){
 					if(((TwoSnake[i]->row == sFood->row)&&(TwoSnake[i]->col == sFood->col))){
 						sFood->row = rand()%23 + 1;
@@ -263,7 +262,6 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 void Game::gameLogic(float dt)  
 {     
 	
-
 	bool haveEat = false;
 	earthSnake->snakeHead->dir = direction;
 
@@ -305,6 +303,51 @@ void Game::gameLogic(float dt)
 		return;
 	}
 }
+
+/*void Game::gameLogic2(float dt)  
+{     
+	
+	bool haveEat = false;
+	//earthSnake->snakeHead->dir = direction;
+
+	//earthSnake->BodyMove();
+	marsSnake->BodyMove();
+
+	//earthSnake->HeadMove();
+	winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
+
+	
+
+	//haveEat = earthSnake->eat(sFood);
+	createFood(earthSnake,marsSnake,haveEat);
+	/*if(haveEat)
+	{
+		//is->setEarthSnakeScores(earthSnake->getEarthSnakeScores());
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
+	}*/
+	/*
+	haveEat = marsSnake->eat(sFood);
+	createFood(earthSnake,marsSnake,haveEat);
+	if(haveEat)
+	{
+		this->setMarsSnakeScores(marsSnake->getMarsSnakeScores());
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
+	}
+
+	this->draw(earthSnake,marsSnake,sFood);
+
+	//赢的条件
+	if(winFlag)
+	{
+		this->unscheduleAllSelectors();
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+		this->restart();
+		CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
+		winFlag = false;
+		
+		return;
+	}
+}*/
 
 //输了的条件
 void Game::judgeOver()
@@ -416,7 +459,16 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 
 	//绘制食物  
 	CCAction *disFood=CCSequence::create(delay,disappear,NULL);
-	CCSprite *food=CCSprite::create("p8.png");
+	//string name = (sFood->foodType).ToString("f");
+	//string name = "r";
+	//sFood->foodType;
+	int i = (int)(sFood->foodType);
+	char name[10];
+	ostringstream oss;
+	oss << i;
+	string num = oss.str() + ".png";
+	strcpy(name,num.c_str());
+	CCSprite *food=CCSprite::create(name);
 	food->setPosition(ccp(sFood->row*32+16,sFood->col*32+16));
 	bg->addChild(food,2);
 	food->runAction(disFood);
@@ -488,6 +540,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 				//this->unscheduleAllSelectors();
 				direction = RIGHT;
 				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
 		else
@@ -497,6 +550,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 				//this->unscheduleAllSelectors();
 				direction = LEFT;
 				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
 	}
@@ -510,6 +564,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 				//this->unscheduleAllSelectors();
 				direction = UP;
 				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
 		else
@@ -519,8 +574,10 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 				//this->unscheduleAllSelectors();
 				direction = DOWN;
 				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
+		//this->schedule(schedule_selector(Game::gameLogic2),0.3);
 	}
 
 	return;

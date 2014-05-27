@@ -95,7 +95,7 @@ bool MarsSnake::eat(SnakeNode* sFood)
 	//»ðÐÇÉßµÄÅö×²¼ì²â
 	if(snakeHead->row==sFood->row&&snakeHead->col==sFood->col)
 	{
-		++count1;
+		count1 += (int)(sFood->foodType);
 		MarsSnakeScores.setMarsSnakeEatScores(count1);
 
 		haveEat = true;

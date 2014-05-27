@@ -13,7 +13,7 @@ int Score::getEarthSnakeEatScores()
 
 void Score::setEarthSnakeEatScores(int count)
 {
-	EarthSnakeEatScores = count * 5;
+	EarthSnakeEatScores = count;
 }
 
 int Score::getMarsSnakeEatScores()
@@ -23,5 +23,5 @@ int Score::getMarsSnakeEatScores()
 
 void Score::setMarsSnakeEatScores(int count)
 {
-	MarsSnakeEatScores = count * 5;
+	MarsSnakeEatScores = count;
 }
