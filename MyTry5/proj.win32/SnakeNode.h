@@ -7,11 +7,15 @@ enum type{
 		orange = 3,
 		pear = 4,
 		apple = 5,
-		mouse = 10,
-		wind = 6,
-		fire = 7,
-		thunder = 8,
-		ice = 9
+		cherry = 10,
+		mango = 6,
+		persimmon = 7,
+		kiwi = 8,
+		pineapple = 9,
+		wind = 11,
+		fire = 12,
+		thunder = 13,
+		ice = 14
 	};
 
 class SnakeNode

@@ -10,7 +10,7 @@ class EarthSnake:public Snake
 {
 public:
 	EarthSnake();
-	bool eat(SnakeNode*);
+	bool eat(SnakeNode*, int*);
 	void HeadMove();
 	Score getEarthSnakeScores();
 	//void judgeOver();

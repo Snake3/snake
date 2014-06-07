@@ -3,6 +3,8 @@
 #include "SimpleAudioEngine.h"
 #include "LoseGame.h"
 #include "WinBattle.h"
+#include <Windows.h>
+#include <time.h>
 
 using namespace cocos2d;
 
@@ -12,6 +14,11 @@ extern vector<SnakeNode*> barriers;
 extern int count1,count2;
 extern int LoseGameScore;
 bool winFlag = false;
+int action = 0;
+clock_t earthStart = 0;
+clock_t marsStart = 0;
+int earth = 2;
+int mars = 2;
 
 SnakeNode *sFood = new SnakeNode();	//食物节点初始化
 EarthSnake *earthSnake = new EarthSnake();
@@ -92,8 +99,10 @@ bool Game::init()
 	addChild(label2);
 
 	this->initSnakeBody();
-	this->schedule(schedule_selector(Game::gameLogic),speed);
-	//this->schedule(schedule_selector(Game::gameLogic2),speed);
+
+	this->schedule(schedule_selector(Game::gameLogic1),speed);
+	//this->unschedule(schedule_selector(Game::gameLogic1));
+	this->schedule(schedule_selector(Game::gameLogic2),speed);
 	
 	if(speed == 0.3f)
 	{
@@ -258,29 +267,127 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	}
 }
 
+void Game::earthDoAction(int action){
+	if(action == 12){
+		earthStart = clock();
+		earth = 1;
+		this->unschedule(schedule_selector(Game::gameLogic2));
+		this->schedule(schedule_selector(Game::gameLogic2),0.8f);
+	}
+	else if(action == 13){
+		earthStart = clock();
+		earth = 0;
+		this->unschedule(schedule_selector(Game::gameLogic1));
+		this->schedule(schedule_selector(Game::gameLogic1),0.2f);
+	}
+	/*else if(action == 11){
+		start = clock();
+		this->unschedule(schedule_selector(Game::gameLogic1));
+		this->schedule(schedule_selector(Game::gameLogic1),5.0f);
+		//绘制蛇头  
+		CCSprite *head=CCSprite::create("p9.png");
+		head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
+		bg->addChild(head,2);
+		//head->runAction(seq);
+
+		//绘制身体  
+		for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
+		{  
+			//CCAction *disBody=CCSequence::create(delay,disappear,NULL);
+			CCSprite *body=CCSprite::create("p5.png");
+			body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
+			bg->addChild(body,1);
+			//body->runAction(disBody);
+		} 
+		//this->schedule(schedule_selector(Game::gameLogic1),8.0f);
+	}*/
+	else if(action == 11){
+		earthStart = clock();
+		earthSnake->snakeBody.pop_back();
+		earthSnake->snakeBody.pop_back();
+	}
+}
+
+void Game::marsDoAction(int action){
+	if(action == 12){
+		marsStart = clock();
+		mars = 1;
+		this->unschedule(schedule_selector(Game::gameLogic1));
+		this->schedule(schedule_selector(Game::gameLogic1),0.8f);
+	}
+	else if(action == 13){
+		marsStart = clock();
+		mars = 0;
+		this->unschedule(schedule_selector(Game::gameLogic2));
+		this->schedule(schedule_selector(Game::gameLogic2),0.2f);
+	}
+	/*else if(action == 11){
+		this->unschedule(schedule_selector(Game::gameLogic1));
+		
+		//绘制蛇头  
+		CCSprite *head=CCSprite::create("p9.png");
+		head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
+		bg->addChild(head,2);
+		//head->runAction(seq);
+
+		//绘制身体  
+		for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
+		{  
+			//CCAction *disBody=CCSequence::create(delay,disappear,NULL);
+			CCSprite *body=CCSprite::create("p5.png");
+			body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
+			bg->addChild(body,1);
+			//body->runAction(disBody);
+		} 
+		//this->schedule(schedule_selector(Game::gameLogic1),8.0f);
+	}*/
+	else if(action == 11){
+		marsStart = clock();
+		marsSnake->snakeBody.pop_back();
+		marsSnake->snakeBody.pop_back();
+	}
+}
+
 //计算出蛇下个位置每个节点的坐标及判断赢的条件
-void Game::gameLogic(float dt)  
+void Game::gameLogic1(float dt)  
 {     
+	if(((clock() - earthStart) > 3000) && (earth == 1)){
+		//this->schedule(schedule_selector(Game::gameLogic1),speed);
+		this->schedule(schedule_selector(Game::gameLogic2),speed);
+		earthStart = 0;
+		earth = 2;
+	}
+	else if(((clock() - earthStart) > 3000) && (earth == 0)){
+		//this->schedule(schedule_selector(Game::gameLogic1),speed);
+		this->schedule(schedule_selector(Game::gameLogic1),speed);
+		earthStart = 0;
+		earth = 2;
+	}
 	
 	bool haveEat = false;
 	earthSnake->snakeHead->dir = direction;
 
 	earthSnake->BodyMove();
-	marsSnake->BodyMove();
+	//marsSnake->BodyMove();
 
 	earthSnake->HeadMove();
-	winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
+	//winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
 
 	
 
-	haveEat = earthSnake->eat(sFood);
+	haveEat = earthSnake->eat(sFood,&action);
+	if(haveEat)
+		earthDoAction(action);
+	
+	
+
 	createFood(earthSnake,marsSnake,haveEat);
 	if(haveEat)
 	{
 		this->setEarthSnakeScores(earthSnake->getEarthSnakeScores());
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
-	
+	/*
 	haveEat = marsSnake->eat(sFood);
 	createFood(earthSnake,marsSnake,haveEat);
 	if(haveEat)
@@ -288,8 +395,9 @@ void Game::gameLogic(float dt)
 		this->setMarsSnakeScores(marsSnake->getMarsSnakeScores());
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
-
-	this->draw(earthSnake,marsSnake,sFood);
+	*/
+	this->drawEarth(earthSnake);
+	this->drawFood(sFood);
 
 	//赢的条件
 	if(winFlag)
@@ -304,8 +412,20 @@ void Game::gameLogic(float dt)
 	}
 }
 
-/*void Game::gameLogic2(float dt)  
+void Game::gameLogic2(float dt)  
 {     
+	if(((clock() - marsStart) > 3000) && (mars == 1)){
+		this->schedule(schedule_selector(Game::gameLogic1),speed);
+		//this->schedule(schedule_selector(Game::gameLogic2),speed);
+		marsStart = 0;
+		mars = 2;
+	}
+	else if(((clock() - marsStart) > 3000) && (mars == 0)){
+		this->schedule(schedule_selector(Game::gameLogic2),speed);
+		//this->schedule(schedule_selector(Game::gameLogic2),speed);
+		marsStart = 0;
+		mars = 2;
+	}
 	
 	bool haveEat = false;
 	//earthSnake->snakeHead->dir = direction;
@@ -319,14 +439,17 @@ void Game::gameLogic(float dt)
 	
 
 	//haveEat = earthSnake->eat(sFood);
-	createFood(earthSnake,marsSnake,haveEat);
+	//createFood(earthSnake,marsSnake,haveEat);
 	/*if(haveEat)
 	{
 		//is->setEarthSnakeScores(earthSnake->getEarthSnakeScores());
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}*/
-	/*
-	haveEat = marsSnake->eat(sFood);
+	
+	haveEat = marsSnake->eat(sFood,&action);
+	if(haveEat)
+		marsDoAction(action);
+
 	createFood(earthSnake,marsSnake,haveEat);
 	if(haveEat)
 	{
@@ -334,7 +457,8 @@ void Game::gameLogic(float dt)
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
 
-	this->draw(earthSnake,marsSnake,sFood);
+	this->drawMars(marsSnake);
+	this->drawFood(sFood);
 
 	//赢的条件
 	if(winFlag)
@@ -347,7 +471,8 @@ void Game::gameLogic(float dt)
 		
 		return;
 	}
-}*/
+
+}
 
 //输了的条件
 void Game::judgeOver()
@@ -436,26 +561,12 @@ void Game::initSnakeBody()
 }
 
 //绘制蛇和绘制食物
-void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
+void Game::drawFood(SnakeNode* sFood)
 {
 	CCFiniteTimeAction * delay = CCDelayTime::create(speed);
 	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
 	CCAction *seq = CCSequence::create(delay,disappear,NULL);
 	CCAction *disahead = CCSequence::create(delay,disappear,NULL);
-
-	//绘制蛇头  
-	CCSprite *head=CCSprite::create("p9.png");
-	head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
-	bg->addChild(head,2);
-	head->runAction(seq);
-
-	
-	//火星蛇头
-	CCSprite *ahead=CCSprite::create("p6.png");
-	ahead->setPosition(ccp(marsSnake->snakeHead->row*32+16,marsSnake->snakeHead->col*32+16));
-	bg->addChild(ahead,2);
-	ahead->runAction(disahead);
-
 
 	//绘制食物  
 	CCAction *disFood=CCSequence::create(delay,disappear,NULL);
@@ -472,17 +583,19 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 	food->setPosition(ccp(sFood->row*32+16,sFood->col*32+16));
 	bg->addChild(food,2);
 	food->runAction(disFood);
+}
 
-	//绘制身体  
-	for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
-	{  
-		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
-		CCSprite *body=CCSprite::create("p5.png");
-		body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
-		bg->addChild(body,1);
-		body->runAction(disBody);
-	}  
+void Game::drawMars(MarsSnake *marsSnake){
+	CCFiniteTimeAction * delay = CCDelayTime::create(speed);
+	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
+	CCAction *seq = CCSequence::create(delay,disappear,NULL);
+	CCAction *disahead = CCSequence::create(delay,disappear,NULL);
 
+	//火星蛇头
+	CCSprite *ahead=CCSprite::create("p6.png");
+	ahead->setPosition(ccp(marsSnake->snakeHead->row*32+16,marsSnake->snakeHead->col*32+16));
+	bg->addChild(ahead,2);
+	ahead->runAction(disahead);
 
 	for(unsigned int i=0;i<marsSnake->snakeBody.size();i++)  
 	{  
@@ -492,7 +605,29 @@ void Game::draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood)
 		bg->addChild(abody,1);
 		abody->runAction(disaBody);
 	}
+}
 
+void Game::drawEarth(EarthSnake *earthSnake){
+	CCFiniteTimeAction * delay = CCDelayTime::create(speed);
+	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
+	CCAction *seq = CCSequence::create(delay,disappear,NULL);
+	CCAction *disahead = CCSequence::create(delay,disappear,NULL);
+
+	//绘制蛇头  
+	CCSprite *head=CCSprite::create("p9.png");
+	head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
+	bg->addChild(head,2);
+	head->runAction(seq);
+
+	//绘制身体  
+	for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
+	{  
+		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
+		CCSprite *body=CCSprite::create("p5.png");
+		body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
+		bg->addChild(body,1);
+		body->runAction(disBody);
+	} 
 }
 
 void Game::restart()
@@ -539,7 +674,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 			{
 				//this->unscheduleAllSelectors();
 				direction = RIGHT;
-				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic1),speed);
 				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
@@ -549,7 +684,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 			{
 				//this->unscheduleAllSelectors();
 				direction = LEFT;
-				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic1),speed);
 				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
@@ -563,7 +698,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 				//方向切换会闪是因为这个原因
 				//this->unscheduleAllSelectors();
 				direction = UP;
-				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic1),speed);
 				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}
@@ -573,7 +708,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 			{
 				//this->unscheduleAllSelectors();
 				direction = DOWN;
-				this->schedule(schedule_selector(Game::gameLogic),speed);
+				//this->schedule(schedule_selector(Game::gameLogic1),speed);
 				//this->schedule(schedule_selector(Game::gameLogic2),speed);
 			}
 		}

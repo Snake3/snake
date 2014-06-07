@@ -13,7 +13,7 @@ class MarsSnake:public Snake
 {
 public:
 	MarsSnake();
-	bool eat(SnakeNode*);
+	bool eat(SnakeNode*,int*);
 	void HeadMove();
 	bool MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);

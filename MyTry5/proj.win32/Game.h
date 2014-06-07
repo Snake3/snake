@@ -37,12 +37,16 @@ public:
 	void createTarget();
 	//void setDirection(CCObject* obj);
 	//显示蛇的函数
-	void draw(EarthSnake *earthSnake,MarsSnake *marsSnake,SnakeNode* sFood);
+	void drawFood(SnakeNode* sFood);
+	void drawEarth(EarthSnake *earthSnake);
+	void drawMars(MarsSnake *marsSnake);
 	void initSnakeBody();
 
 	//计算出蛇下个位置所以节点的坐标
-	void gameLogic(float dt);
-	//void gameLogic2(float dt);
+	void gameLogic1(float dt);
+	void gameLogic2(float dt);
+	void earthDoAction(int action);
+	void marsDoAction(int action);
 	void judgeOver();
 	void createFood(EarthSnake*,MarsSnake*,bool haveEat);
 	void restart();

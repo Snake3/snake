@@ -10,7 +10,7 @@ EarthSnake::EarthSnake(){
 	snakeHead = new SnakeNode();
 }
 
-bool EarthSnake::eat(SnakeNode* sFood){
+bool EarthSnake::eat(SnakeNode* sFood,int* action){
 		bool haveEat = false;
 		srand((unsigned)time(0));
 	//碰撞检测(只是判断蛇头位置和食物位置是否一样而已）
@@ -59,6 +59,7 @@ bool EarthSnake::eat(SnakeNode* sFood){
 
 		}  
 		snakeBody.push_back(sn);//将新的节点加入到蛇的身体中。  
+		*action = (int)(sFood->foodType);
 	} 
 	return haveEat;
 	}

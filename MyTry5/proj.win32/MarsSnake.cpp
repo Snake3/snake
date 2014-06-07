@@ -89,7 +89,7 @@ void MarsSnake::addCloseList()
 	}
 }
 
-bool MarsSnake::eat(SnakeNode* sFood)
+bool MarsSnake::eat(SnakeNode* sFood,int* action)
 {
 	bool haveEat = false;
 	//»ğĞÇÉßµÄÅö×²¼ì²â

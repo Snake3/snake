@@ -11,7 +11,7 @@ public:
 	Snake();
 	std::vector<SnakeNode*> snakeBody;
 	SnakeNode* snakeHead;
-	virtual bool eat(SnakeNode*) = 0;
+	virtual bool eat(SnakeNode*,int*) = 0;
 	void BodyMove();
 	virtual void HeadMove() = 0;
 };
