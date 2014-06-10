@@ -124,13 +124,19 @@
   <ItemGroup>
     <None Include="..\Resources\CloseNormal.png" />
     <None Include="..\Resources\CloseSelected.png" />
+    <None Include="..\Resources\dialogbg.png" />
+    <None Include="..\Resources\futura-48.fnt" />
     <None Include="..\Resources\grid5.jpg" />
     <None Include="..\Resources\HelloWorld.png" />
+    <None Include="..\Resources\highscores.png" />
+    <None Include="..\Resources\markerFelt.fnt" />
+    <None Include="..\Resources\ok.png" />
     <None Include="..\Resources\pause2.png" />
     <None Include="..\Resources\pause2Selected.png" />
     <None Include="..\Resources\play2.png" />
     <None Include="..\Resources\play2Selected.png" />
     <None Include="..\Resources\Projectile.png" />
+    <None Include="..\Resources\settings.png" />
     <None Include="..\Resources\try.png" />
     <None Include="..\Resources\winbg.png" />
     <None Include="C:\Users\WGC\Desktop\cocos2dx旧\MyTry4\Resources\back.png" />
@@ -156,8 +162,10 @@
     <ClInclude Include="LoseGame.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="MarsSnake.h" />
+    <ClInclude Include="PopLayer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Score.h" />
+    <ClInclude Include="SelectLevel.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeNode.h" />
     <ClInclude Include="SpeedSelect.h" />
@@ -172,7 +180,9 @@
     <ClCompile Include="LoseGame.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MarsSnake.cpp" />
+    <ClCompile Include="PopLayer.cpp" />
     <ClCompile Include="Score.cpp" />
+    <ClCompile Include="SelectLevel.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeNode.cpp" />
     <ClCompile Include="SpeedSelect.cpp" />

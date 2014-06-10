@@ -15,86 +15,13 @@ MarsSnake::MarsSnake()
 
 void MarsSnake::HeadMove(){}
 
-//石头、仙人掌等障碍物的添加
-void MarsSnake::addCloseList()
-{	//16个坐标值
-	SnakeNode *point1 = new SnakeNode();
-	point1->row = 13;
-	point1->col = 12;
-	CloseList.push_back(point1);
-	SnakeNode *point2 = new SnakeNode();
-	point2->row = 13;
-	point2->col = 11;
-	CloseList.push_back(point2);
-	SnakeNode *point3 = new SnakeNode();
-	point3->row = 14;
-	point3->col = 12;
-	CloseList.push_back(point3);
-	SnakeNode *point4 = new SnakeNode();
-	point4->row = 14;
-	point4->col = 11;
-	CloseList.push_back(point4);
-	SnakeNode *point5 = new SnakeNode();
-	point5->row = 15;
-	point5->col = 12;
-	CloseList.push_back(point5);
-	SnakeNode *point6 = new SnakeNode();
-	point6->row = 15;
-	point6->col = 11;
-	CloseList.push_back(point6);
-	SnakeNode *point7 = new SnakeNode();
-	point7->row = 18;
-	point7->col = 7;
-	CloseList.push_back(point7);
-	SnakeNode *point8 = new SnakeNode();
-	point8->row = 19;
-	point8->col = 7;
-	CloseList.push_back(point8);
-	SnakeNode *point9 = new SnakeNode();
-	point9->row = 20;
-	point9->col = 7;
-	CloseList.push_back(point9);
-	SnakeNode *point10 = new SnakeNode();
-	point10->row = 18;
-	point10->col = 8;
-	CloseList.push_back(point10);
-	SnakeNode *point11 = new SnakeNode();
-	point11->row = 19;
-	point11->col = 8;
-	CloseList.push_back(point11);
-	SnakeNode *point12 = new SnakeNode();
-	point12->row = 20;
-	point12->col = 8;
-	CloseList.push_back(point12);
-	SnakeNode *point13 = new SnakeNode();
-	point13->row = 3;
-	point13->col = 8;
-	CloseList.push_back(point13);
-	SnakeNode *point14 = new SnakeNode();
-	point14->row = 7;
-	point14->col = 10;
-	CloseList.push_back(point14);
-	SnakeNode *point15 = new SnakeNode();
-	point15->row = 6;
-	point15->col = 5;
-	CloseList.push_back(point15);
-	SnakeNode *point16 = new SnakeNode();
-	point16->row = 18;
-	point16->col = 2;
-	CloseList.push_back(point16);
-
-	for(int i = 1; i <= 16; i++)
-	{
-		barriers.push_back(CloseList[CloseList.size() - i]);
-	}
-}
-
 bool MarsSnake::eat(SnakeNode* sFood,int* action)
 {
 	bool haveEat = false;
 	//火星蛇的碰撞检测
 	if(snakeHead->row==sFood->row&&snakeHead->col==sFood->col)
 	{
+		//++count1;
 		count1 += (int)(sFood->foodType);
 		MarsSnakeScores.setMarsSnakeEatScores(count1);
 
@@ -139,7 +66,7 @@ bool MarsSnake::eat(SnakeNode* sFood,int* action)
 	return haveEat;
 }
 
-bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
+bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake, bool UpFlag, bool DownFlag, bool LeftFlag, bool RightFlag)
 {
 	//AStar算法实现曼哈顿距离
 	vector<SnakeNode*> OpenList;
@@ -160,7 +87,7 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 	tanchiSnake.insert(tanchiSnake.begin(),snakeBody.begin(),snakeBody.end());
 
 	CloseList = tanchiSnake;
-	this->addCloseList();
+	//this->addCloseList();
 
 	//p = aHead;
 	//p->GValue = 0;
@@ -196,17 +123,30 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		//相邻节点放入OpenList中
 		vector<SnakeNode*> adj;
 
-		adj.push_back(pu);
-		adj.push_back(pd);
-		adj.push_back(pl);
-		adj.push_back(pr);
+		//选择不在障碍物中的相邻节点
+		if(!UpFlag)
+			adj.push_back(pu);
+		else
+			CloseList.push_back(pu);
+		if(!DownFlag)
+			adj.push_back(pd);
+		else
+			CloseList.push_back(pd);
+		if(!LeftFlag)
+			adj.push_back(pl);
+		else
+			CloseList.push_back(pl);
+		if(!RightFlag)
+			adj.push_back(pr);
+		else
+			CloseList.push_back(pr);
 
 		//int c = 0;
 		//删除超出边界的相邻节点
-		unsigned int adjSize = 4;
-		for(unsigned int b = 0; b < adjSize;)
+		unsigned int adjSize = adj.size();
+		/*for(unsigned int b = 0; b < adjSize;)
 		{
-			if(adj[b]->col > 13 || adj[b]->col < 0 || adj[b]->row > 23 || adj[b]->row < 1)
+			if(adj[b]->col > 14 || adj[b]->col < 0 || adj[b]->row > 24 || adj[b]->row < 0)
 			{	
 				//c = b;
 				CloseList.push_back(adj[b]);
@@ -218,13 +158,18 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			{
 				b++;
 			}
-		}
+		}*/
 		
 		if(isContain(CloseList,pu) && isContain(CloseList,pd) && isContain(CloseList,pl) && isContain(CloseList,pr))
 		{
 			return true;
 			//exit(1);
 		}
+
+		/*if(UpFlag && DownFlag && LeftFlag && RightFlag)
+		{
+			return true;
+		}*/
 		OpenList.insert(OpenList.end(),adj.begin(),adj.end());		
 
 		CloseList.push_back(p);
@@ -242,7 +187,7 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 			else
 				openlistSize++;
 		}
-		//相邻节点出现在CloseList障碍物中则删除
+		//相邻节点出现在CloseList蛇上则删除
 		for(unsigned int e = 0; e < adjSize;)
 		{
 			if(isContain(CloseList,adj[e]))
@@ -259,9 +204,13 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 		
 		
 
-		int smallest=900,temp = 0;
+		int smallest=900, temp = 0/*, sc = -1*/;
 		for(unsigned int k = 0; k < adjSize; k++)
 		{
+			/*if( smallest == adj[k]->HValue && adj[k]->row != sFood->row && adj[k]->col != sFood->col)
+			{
+				sc = k;
+			}*/
 			smallest = min(smallest,adj[k]->HValue);
 		}
 		for(unsigned int c = 0; c < adjSize; c++)
@@ -272,6 +221,9 @@ bool MarsSnake::MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake)
 				break;
 			}
 		}
+		/*//避免上下方向优先而导致忽略左右（实际较短）
+		if(sc != -1 && adj[sc]->HValue == smallest)
+			temp = sc;*/
 		
 		
 		

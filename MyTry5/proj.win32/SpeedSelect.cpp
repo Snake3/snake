@@ -1,5 +1,5 @@
 #include "SpeedSelect.h"
-#include "Game.h"
+#include "HelloWorldScene.h"
 
 using namespace cocos2d;
 
@@ -29,6 +29,14 @@ bool SpeedSelect::init()
 	this->addChild(bg);
 
 	ccColor3B color = ccc3(40, 240, 20);
+
+	CCTextFieldTTF* text = CCTextFieldTTF::textFieldWithPlaceHolder(
+		"Input Your Name...", "Arial", 24);
+	text->setPosition(ccp(400, 320));
+	text->setColor(ccc3(88,88,88));
+	this->addChild(text);
+	text->attachWithIME();//接受键盘输入信息
+
 	//创建文字按钮 
 	auto labelHigh = CCLabelTTF::create("High", "宋体", 19); 
 	labelHigh->setColor(color);
@@ -78,5 +86,5 @@ void SpeedSelect::menuCloseCallback(CCObject* pSender)
 		break; 
 	} 
 
-	CCDirector::sharedDirector()->replaceScene(Game::scene());
+	CCDirector::sharedDirector()->replaceScene(HelloWorld::scene());
 }

@@ -15,9 +15,9 @@ public:
 	MarsSnake();
 	bool eat(SnakeNode*,int*);
 	void HeadMove();
-	bool MarsSnakeHeadMove(SnakeNode* sFood,EarthSnake* earthSnake);
+	bool MarsSnakeHeadMove(SnakeNode* sFood, EarthSnake* earthSnake, bool UpFlag, bool DownFlag, bool LeftFlag, bool RightFlag);
 	bool isContain(std::vector<SnakeNode*> List, SnakeNode* obj);
-	void addCloseList();
+	//void addCloseList();
 	Score getMarsSnakeScores();
 private:
 	vector<SnakeNode*> CloseList;

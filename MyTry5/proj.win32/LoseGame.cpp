@@ -3,7 +3,7 @@
 
 using namespace cocos2d;
 
-int LoseGameScore = 0;
+int GameScore = 0;
 
 CCScene* LoseGame::scene()
 {
@@ -42,13 +42,13 @@ bool LoseGame::init()
 		labelText1 = CCLabelTTF ::create();
 		labelText1->setFontName("Calibri");
 		labelText1->setFontSize(20);
-		labelText1->setString(itoa(LoseGameScore,a,10));
+		labelText1->setString(itoa(GameScore,a,10));
 		labelText1->setPosition(ccp(481,100));
 		this->addChild(labelText1);
 
 		CCMenuItemImage *pTryItem = CCMenuItemImage::create("try.png","try.png",this,menu_selector(LoseGame::menuCloseCallback));
 		pTryItem->setTag(1);
-		pTryItem->setPosition(ccp(399,27)); 
+		pTryItem->setPosition(ccp(398,28)); 
 
 		auto menu = CCMenu::create(pTryItem, NULL); 
 		menu->setPosition(CCPointZero); 

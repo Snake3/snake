@@ -21,32 +21,40 @@ class Game : public cocos2d::CCLayer
 public:
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();  
-
     // there's no 'id' in cpp, so we recommand to return the exactly class pointer
     static cocos2d::CCScene* scene();
-    
+
     // a selector callback
     void menuCloseCallback(CCObject* pSender);
-
 	void responseFunc(CCObject* obj);
 
     // implement the "static node()" method manually
     CREATE_FUNC(Game);
-	//virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+
 	void myDefine(CCNode* who);
 	void createTarget();
-	//void setDirection(CCObject* obj);
+
 	//显示蛇的函数
 	void drawFood(SnakeNode* sFood);
 	void drawEarth(EarthSnake *earthSnake);
 	void drawMars(MarsSnake *marsSnake);
+
+	//是否在障碍物里
+	bool isInObstacle(CCPoint point);
+	void ChooseMap();
+
 	void initSnakeBody();
+	bool isHaveSaveFile();
+	void gameEndResponse();
+	void lose();
+	void win();
 
 	//计算出蛇下个位置所以节点的坐标
 	void gameLogic1(float dt);
 	void gameLogic2(float dt);
 	void earthDoAction(int action);
 	void marsDoAction(int action);
+
 	void judgeOver();
 	void createFood(EarthSnake*,MarsSnake*,bool haveEat);
 	void restart();
@@ -57,10 +65,11 @@ public:
 	void ccTouchMoved(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
 	void ccTouchEnded(cocos2d::CCTouch *pTouch, cocos2d::CCEvent *pEvent);
 private:
-	CCSprite* bg;
+	//CCSprite* bg;
 	Score EarthSnakeScores, MarsSnakeScores;
 	CCMenuItemImage *pPlayItem, *pPauseItem, *pMusicONItem, *pMusicOFFItem;
 	CCLabelAtlas *label1, *label2;
+	
 };
 
 #endif  // __HELLOWORLD_SCENE_H_

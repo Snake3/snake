@@ -78,6 +78,24 @@
     <None Include="..\Resources\try.png">
       <Filter>resource</Filter>
     </None>
+    <None Include="..\Resources\highscores.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\settings.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\dialogbg.png">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\futura-48.fnt">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\markerFelt.fnt">
+      <Filter>resource</Filter>
+    </None>
+    <None Include="..\Resources\ok.png">
+      <Filter>resource</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MyTry5.rc">
@@ -127,6 +145,12 @@
     <ClInclude Include="Score.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="PopLayer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectLevel.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -166,6 +190,12 @@
       <Filter>source</Filter>
     </ClCompile>
     <ClCompile Include="Score.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="PopLayer.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectLevel.cpp">
       <Filter>source</Filter>
     </ClCompile>
   </ItemGroup>

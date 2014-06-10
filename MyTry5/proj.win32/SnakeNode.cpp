@@ -12,10 +12,11 @@ SnakeNode::SnakeNode()
 	foodType = orange;
 }
 
-int SnakeNode::generate(){
+int SnakeNode::generate()
+{
 	srand((unsigned)time(0));
-	row = rand()%23 + 1;  
-	col = rand()%14;
+	row = rand()%25;  
+	col = rand()%15;
 	foodType = (type)(rand()%14 + 1);
 	return 0;
 }

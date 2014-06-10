@@ -10,15 +10,18 @@ using namespace cocos2d;
 
 int direction = 1;					//初始化方向
 extern float speed;
-extern vector<SnakeNode*> barriers;
+//extern vector<SnakeNode*> barriers;
 extern int count1,count2;
-extern int LoseGameScore;
+extern int GameScore;
+extern int level;
 bool winFlag = false;
 int action = 0;
 clock_t earthStart = 0;
 clock_t marsStart = 0;
 int earth = 2;
 int mars = 2;
+CCTMXLayer* flagLayer;
+CCTMXTiledMap* tileMap;
 
 SnakeNode *sFood = new SnakeNode();	//食物节点初始化
 EarthSnake *earthSnake = new EarthSnake();
@@ -41,12 +44,7 @@ CCScene* Game::scene()
 
 bool Game::init()
 {
-	//背景网格
-	bg = CCSprite::create("grid5.jpg");
-	//位置以图片中心为准
-	bg->setPosition(ccp(400,240));
-	this->addChild(bg);
-
+	this->ChooseMap();
 	CCSize size = CCDirector::sharedDirector()->getWinSize();	
 
 	CCMenuItemImage *pExitItem = CCMenuItemImage::create("exit2.png","exit2Selected.png",this,menu_selector(Game::responseFunc));
@@ -75,11 +73,9 @@ bool Game::init()
 
 	auto menu = CCMenu::create(pExitItem, pPlayItem, pPauseItem, pMusicOFFItem, pMusicONItem, NULL); 
 	menu->setPosition(CCPointZero); 
-	bg->addChild(menu); 
+	tileMap->addChild(menu); 
 
 	CCLabelTTF* labelText1 = CCLabelTTF ::create("Scores1:", "STKaiti", 24);
-	//CCLabelTTF* labelText = CCLabelTTF::labelWithString("YourScores:","MarkerFelt-Thin",20);
-	//labelText->setColor(color);
 	labelText1->setPosition(ccp(400,456));
 	addChild(labelText1);
 
@@ -89,8 +85,6 @@ bool Game::init()
 	addChild(label1);
 
 	CCLabelTTF* labelText2 = CCLabelTTF ::create("Your Scores:", "STKaiti", 24);
-	//CCLabelTTF* labelText = CCLabelTTF::labelWithString("YourScores:","MarkerFelt-Thin",20);
-	//labelText->setColor(color);
 	labelText2->setPosition(ccp(600,456));
 	addChild(labelText2);
 
@@ -99,9 +93,7 @@ bool Game::init()
 	addChild(label2);
 
 	this->initSnakeBody();
-
 	this->schedule(schedule_selector(Game::gameLogic1),speed);
-	//this->unschedule(schedule_selector(Game::gameLogic1));
 	this->schedule(schedule_selector(Game::gameLogic2),speed);
 	
 	if(speed == 0.3f)
@@ -121,7 +113,34 @@ bool Game::init()
 	this->setTouchEnabled(true);//使layer具有响应触摸事件的能力
 	CCDirector::sharedDirector()->getTouchDispatcher()
 		->addTargetedDelegate(this, 0, true);
+
+	//最高分金币等写入本地文件
+	if(this->isHaveSaveFile())
+	{
+		CCLog("此项目已存在保存数据的xml文件");
+	}
+	else
+	{
+		CCLog("此项目不存在保存数据的xml文件，当你看到此打印已默认创建了xml文件");
+	}
+
     return true;
+}
+
+void Game::ChooseMap()
+{
+	char a[20];
+	string b =  "Level";
+	b += itoa(level,a,10);
+	b += ".tmx";
+	CCString map = b;
+	tileMap = CCTMXTiledMap::create(map.getCString());
+	CCTMXLayer* backLayer = tileMap->layerNamed("Tile Layer 1");
+	CCAssert(backLayer, "Can not find layer named by (Tile Layer 1)");
+	this->addChild(tileMap); // 地图加到layer上面
+
+	flagLayer = tileMap->layerNamed("Tile Layer 2");
+	flagLayer->setVisible(false);
 }
 
 void Game::menuCloseCallback(CCObject* pSender)
@@ -168,6 +187,30 @@ void Game::responseFunc(CCObject* obj)
 	} 
 }   
 
+////在障碍物里
+bool Game::isInObstacle(CCPoint point)
+{
+	//CCTMXLayer* ObstacleLayer = tileMap->layerNamed("Tile Layer 2");
+	int oneTileId = flagLayer->tileGIDAt(point);//根据tilemap坐标得到层上物体的id
+
+	//层上什么物体都没有
+	if (oneTileId == 0)
+	{
+		return false;
+	}
+
+	CCDictionary* propertileOnOneTile = tileMap->propertiesForGID(oneTileId);
+	const CCString* Obstacle = propertileOnOneTile->valueForKey("Obstacle");
+
+	//判断如果新位置是碰撞属性true，不可以移动
+	if(Obstacle && Obstacle->compare("true") == 0)//碰撞
+	{
+		return true;
+	}
+	
+	return false;
+}
+
 //清除、消失的函数
 void Game::myDefine(CCNode* who)
 {	
@@ -175,56 +218,9 @@ void Game::myDefine(CCNode* who)
 	who->removeFromParentAndCleanup(true);
 }
 
-#if 0
-//设置贪食蛇的方向
-void Game::setDirection(CCObject* obj)
-{
-
-	//this->schedule(schedule_selector(Game::run),1);
-	int i = dynamic_cast<CCMenuItemImage*>(obj)->getTag();
-	switch (i) 
-	{ 
-	case UP:
-		if((earthSnake->snakeHead->dir != UP) && (earthSnake->snakeHead->dir != DOWN))
-		{
-			//方向切换会闪是因为这个原因
-			//this->unscheduleAllSelectors();
-			direction = UP;
-			this->schedule(schedule_selector(Game::gameLogic),speed);
-		}
-		break; 
-	case DOWN:
-		if((earthSnake->snakeHead->dir != DOWN) && (earthSnake->snakeHead->dir != UP))
-		{
-			//this->unscheduleAllSelectors();
-			direction = DOWN;
-			this->schedule(schedule_selector(Game::gameLogic),speed);
-		}
-		break; 
-	case LEFT:
-		if((earthSnake->snakeHead->dir != LEFT) && (earthSnake->snakeHead->dir != RIGHT))
-		{
-			//this->unscheduleAllSelectors();
-			direction = LEFT;
-			this->schedule(schedule_selector(Game::gameLogic),speed);
-		}
-		break;
-	case RIGHT:
-		if((earthSnake->snakeHead->dir != RIGHT) && (earthSnake->snakeHead->dir != LEFT))
-		{
-			//this->unscheduleAllSelectors();
-			direction = RIGHT;
-			this->schedule(schedule_selector(Game::gameLogic),speed);
-		}
-		break;
-	default: 
-		break;
-	}
-}
-#endif
-
 void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	bool flag = true;
+	//srand((unsigned)time(0));
 
 	//两蛇合并
 	vector<SnakeNode*> huoxingSnake, TwoSnake;
@@ -235,12 +231,14 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 	TwoSnake.insert(TwoSnake.begin(),marsSnake->snakeBody.begin(),marsSnake->snakeBody.end());
 
 	if(haveEat){
-		sFood->generate();
-		while(flag){
+	//sFood->row = rand()%23 + 1;  
+	//sFood->col = rand()%14;
+	sFood->generate();
+	while(flag){
 			for(unsigned int i=0;i<TwoSnake.size();i++){
 					if(((TwoSnake[i]->row == sFood->row)&&(TwoSnake[i]->col == sFood->col))){
-						sFood->row = rand()%23 + 1;
-						sFood->col = rand()%14;
+						sFood->row = rand()%25;
+						sFood->col = rand()%15;
 						i = 0;
 					}
 				}
@@ -255,18 +253,19 @@ void Game::createFood(EarthSnake* earthSnake,MarsSnake* marsSnake,bool haveEat){
 				}
 				flag = false;
 				*/
-				for(unsigned int i=0;i<barriers.size();i++){
-					if(((barriers[i]->row == sFood->row)&&(barriers[i]->col == sFood->col))){
-						sFood->row = rand()%23 + 1;
-						sFood->col = rand()%14;
-						i = 0;
+				//for(unsigned int i=0;i<barriers.size();i++){
+					while(isInObstacle(ccp(sFood->row, 14 - sFood->col))){
+						sFood->row = rand()%25;
+						sFood->col = rand()%15;
+						//i = 0;
 						flag = true;
 					}
-				}
+				//}
 			}
 	}
 }
 
+//地球蛇吃到特殊食物的3种行为
 void Game::earthDoAction(int action){
 	if(action == 12){
 		earthStart = clock();
@@ -308,6 +307,7 @@ void Game::earthDoAction(int action){
 	}
 }
 
+//火星蛇吃到特殊食物的3种行为
 void Game::marsDoAction(int action){
 	if(action == 12){
 		marsStart = clock();
@@ -348,103 +348,77 @@ void Game::marsDoAction(int action){
 	}
 }
 
-//计算出蛇下个位置每个节点的坐标及判断赢的条件
+//计算出地球蛇下个位置每个节点的坐标
 void Game::gameLogic1(float dt)  
 {     
 	if(((clock() - earthStart) > 3000) && (earth == 1)){
-		//this->schedule(schedule_selector(Game::gameLogic1),speed);
 		this->schedule(schedule_selector(Game::gameLogic2),speed);
 		earthStart = 0;
 		earth = 2;
 	}
 	else if(((clock() - earthStart) > 3000) && (earth == 0)){
-		//this->schedule(schedule_selector(Game::gameLogic1),speed);
 		this->schedule(schedule_selector(Game::gameLogic1),speed);
 		earthStart = 0;
 		earth = 2;
 	}
-	
+
 	bool haveEat = false;
 	earthSnake->snakeHead->dir = direction;
-
 	earthSnake->BodyMove();
-	//marsSnake->BodyMove();
-
 	earthSnake->HeadMove();
-	//winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
-
-	
 
 	haveEat = earthSnake->eat(sFood,&action);
 	if(haveEat)
+	{
 		earthDoAction(action);
-	
-	
-
+	}
 	createFood(earthSnake,marsSnake,haveEat);
 	if(haveEat)
 	{
 		this->setEarthSnakeScores(earthSnake->getEarthSnakeScores());
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
 	}
-	/*
-	haveEat = marsSnake->eat(sFood);
-	createFood(earthSnake,marsSnake,haveEat);
-	if(haveEat)
-	{
-		this->setMarsSnakeScores(marsSnake->getMarsSnakeScores());
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
-	}
-	*/
+
 	this->drawEarth(earthSnake);
 	this->drawFood(sFood);
-
-	//赢的条件
-	if(winFlag)
-	{
-		this->unscheduleAllSelectors();
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-		this->restart();
-		CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
-		winFlag = false;
-		
-		return;
-	}
 }
 
+//计算出火星蛇下个位置每个节点的坐标以及赢的条件
 void Game::gameLogic2(float dt)  
 {     
 	if(((clock() - marsStart) > 3000) && (mars == 1)){
 		this->schedule(schedule_selector(Game::gameLogic1),speed);
-		//this->schedule(schedule_selector(Game::gameLogic2),speed);
 		marsStart = 0;
 		mars = 2;
 	}
 	else if(((clock() - marsStart) > 3000) && (mars == 0)){
 		this->schedule(schedule_selector(Game::gameLogic2),speed);
-		//this->schedule(schedule_selector(Game::gameLogic2),speed);
 		marsStart = 0;
 		mars = 2;
 	}
 	
 	bool haveEat = false;
-	//earthSnake->snakeHead->dir = direction;
-
-	//earthSnake->BodyMove();
 	marsSnake->BodyMove();
+	bool UpFlag, DownFlag, LeftFlag, RightFlag;
 
-	//earthSnake->HeadMove();
-	winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake);
+	if(marsSnake->snakeHead->col + 1 > 14)
+		UpFlag = true;
+	else
+		UpFlag = isInObstacle(ccp(marsSnake->snakeHead->row, 14 - marsSnake->snakeHead->col - 1));
+	if(marsSnake->snakeHead->col - 1 < 0)
+		DownFlag = true;
+	else
+		DownFlag = isInObstacle(ccp(marsSnake->snakeHead->row, 14 - marsSnake->snakeHead->col + 1));
+	if(marsSnake->snakeHead->row - 1 < 0)
+		LeftFlag = true;
+	else
+		LeftFlag = isInObstacle(ccp(marsSnake->snakeHead->row - 1, 14 - marsSnake->snakeHead->col));
+	if(marsSnake->snakeHead->row + 1 > 24)
+		RightFlag = true;
+	else
+		RightFlag = isInObstacle(ccp(marsSnake->snakeHead->row + 1, 14 - marsSnake->snakeHead->col));
 
-	
-
-	//haveEat = earthSnake->eat(sFood);
-	//createFood(earthSnake,marsSnake,haveEat);
-	/*if(haveEat)
-	{
-		//is->setEarthSnakeScores(earthSnake->getEarthSnakeScores());
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("cheer.wav");
-	}*/
+	winFlag = marsSnake->MarsSnakeHeadMove(sFood,earthSnake,UpFlag,DownFlag,LeftFlag,RightFlag);
 	
 	haveEat = marsSnake->eat(sFood,&action);
 	if(haveEat)
@@ -463,37 +437,69 @@ void Game::gameLogic2(float dt)
 	//赢的条件
 	if(winFlag)
 	{
-		this->unscheduleAllSelectors();
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-		this->restart();
-		CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
-		winFlag = false;
-		
+		this->win();
 		return;
 	}
+}
+
+//游戏结束的响应，赢了或者输了
+void Game::gameEndResponse()
+{
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
+	
+	if(count2 != 0)
+	{
+		GameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
+	}
+	else
+	{
+		GameScore = 0;
+	}
+
+	int Hiscores = CCUserDefault::sharedUserDefault()->getIntegerForKey("Hiscores");
+	int coins = CCUserDefault::sharedUserDefault()->getIntegerForKey("Coins");
+	CCUserDefault::sharedUserDefault()->setIntegerForKey("Coins", GameScore + coins);
+
+	if(GameScore > Hiscores)
+	{
+		//我们这里简单存储条数据
+		CCUserDefault::sharedUserDefault()->setIntegerForKey("Hiscores", GameScore);
+		CCUserDefault::sharedUserDefault()->flush();//这里一定要提交写入哦，否则不会记录到xml中，下次启动游戏你就获取不到value了。
+	}
+	this->restart();
+}
+
+//游戏赢了的响应
+void Game::win()
+{
+	this->unscheduleAllSelectors();
+	this->gameEndResponse();
+	CCDirector::sharedDirector()->replaceScene(WinBattle::scene());
+	winFlag = false;
 
 }
 
-//输了的条件
+//游戏输了的响应
+void Game::lose()
+{
+	this->gameEndResponse();
+	CCDirector::sharedDirector()->replaceScene(LoseGame::scene());
+}
+
+//判断是否输
 void Game::judgeOver()
 {
 	//撞墙
-	if(earthSnake->snakeHead->col >= 14 || earthSnake->snakeHead->col < 0 || earthSnake->snakeHead->row < 1 || earthSnake->snakeHead->row >= 24)
+	if(earthSnake->snakeHead->col >= 15 || earthSnake->snakeHead->col < 0 || earthSnake->snakeHead->row < 0 || earthSnake->snakeHead->row >= 25)
 	{
-		CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-		this->restart();
-		LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
-		CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+		 this->lose();
 	}
 	//撞自己
 	for(unsigned int i=0;i<earthSnake->snakeBody.size();i++)  
 	{  
 		if((earthSnake->snakeHead->col == earthSnake->snakeBody[i]->col) && (earthSnake->snakeHead->row == earthSnake->snakeBody[i]->row))
 		{
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-			this->restart();
-			LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
-			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+			this->lose();
 		}
 	}
 	//撞火星蛇
@@ -503,23 +509,19 @@ void Game::judgeOver()
 	{  
 		if((earthSnake->snakeHead->col == huoBody[i]->col) && (earthSnake->snakeHead->row == huoBody[i]->row))
 		{
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-			this->restart();
-			LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
-			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
+			this->lose(); 
 		}
 	}
 	//撞障碍物
+	/*CCPoint HeadPos = new CCPoint();
+	HeadPos.setPoint(earthSnake->snakeHead->row, earthSnake->snakeHead->col);
 	for(unsigned int i=0;i<barriers.size();i++)
-	{  
-		if((earthSnake->snakeHead->col == barriers[i]->col) && (earthSnake->snakeHead->row == barriers[i]->row))
-		{
-			CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic();
-			this->restart();
-			LoseGameScore = earthSnake->getEarthSnakeScores().getEarthSnakeEatScores();
-			CCDirector::sharedDirector()->replaceScene(LoseGame::scene()); 
-		}
+	{  */
+	if(isInObstacle(ccp(earthSnake->snakeHead->row, 14 - earthSnake->snakeHead->col)))
+	{
+		this->lose(); 
 	}
+	//}
 }
 
 //初始化蛇的身体，4个节点
@@ -570,9 +572,6 @@ void Game::drawFood(SnakeNode* sFood)
 
 	//绘制食物  
 	CCAction *disFood=CCSequence::create(delay,disappear,NULL);
-	//string name = (sFood->foodType).ToString("f");
-	//string name = "r";
-	//sFood->foodType;
 	int i = (int)(sFood->foodType);
 	char name[10];
 	ostringstream oss;
@@ -580,12 +579,24 @@ void Game::drawFood(SnakeNode* sFood)
 	string num = oss.str() + ".png";
 	strcpy(name,num.c_str());
 	CCSprite *food=CCSprite::create(name);
+	//CCSprite *food=CCSprite::create("p8.png");
 	food->setPosition(ccp(sFood->row*32+16,sFood->col*32+16));
-	bg->addChild(food,2);
+	tileMap->addChild(food,2);
 	food->runAction(disFood);
+
+	for(unsigned int i=0;i<marsSnake->snakeBody.size();i++)  
+	{  
+		CCAction *disaBody=CCSequence::create(delay,disappear,NULL);
+		CCSprite *abody=CCSprite::create("p7.png");
+		abody->setPosition(ccp(marsSnake->snakeBody[i]->row*32+16,marsSnake->snakeBody[i]->col*32+16));
+		tileMap->addChild(abody,1);
+		abody->runAction(disaBody);
+	}
+
 }
 
-void Game::drawMars(MarsSnake *marsSnake){
+void Game::drawMars(MarsSnake *marsSnake)
+{
 	CCFiniteTimeAction * delay = CCDelayTime::create(speed);
 	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
 	CCAction *seq = CCSequence::create(delay,disappear,NULL);
@@ -594,7 +605,7 @@ void Game::drawMars(MarsSnake *marsSnake){
 	//火星蛇头
 	CCSprite *ahead=CCSprite::create("p6.png");
 	ahead->setPosition(ccp(marsSnake->snakeHead->row*32+16,marsSnake->snakeHead->col*32+16));
-	bg->addChild(ahead,2);
+	tileMap->addChild(ahead,2);
 	ahead->runAction(disahead);
 
 	for(unsigned int i=0;i<marsSnake->snakeBody.size();i++)  
@@ -602,12 +613,13 @@ void Game::drawMars(MarsSnake *marsSnake){
 		CCAction *disaBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *abody=CCSprite::create("p7.png");
 		abody->setPosition(ccp(marsSnake->snakeBody[i]->row*32+16,marsSnake->snakeBody[i]->col*32+16));
-		bg->addChild(abody,1);
+		tileMap->addChild(abody,1);
 		abody->runAction(disaBody);
 	}
 }
 
-void Game::drawEarth(EarthSnake *earthSnake){
+void Game::drawEarth(EarthSnake *earthSnake)
+{
 	CCFiniteTimeAction * delay = CCDelayTime::create(speed);
 	CCCallFuncN* disappear = CCCallFuncN::create(this,callfuncN_selector(Game::myDefine));
 	CCAction *seq = CCSequence::create(delay,disappear,NULL);
@@ -616,7 +628,7 @@ void Game::drawEarth(EarthSnake *earthSnake){
 	//绘制蛇头  
 	CCSprite *head=CCSprite::create("p9.png");
 	head->setPosition(ccp(earthSnake->snakeHead->row*32+16,earthSnake->snakeHead->col*32+16));
-	bg->addChild(head,2);
+	tileMap->addChild(head,2);
 	head->runAction(seq);
 
 	//绘制身体  
@@ -625,7 +637,7 @@ void Game::drawEarth(EarthSnake *earthSnake){
 		CCAction *disBody=CCSequence::create(delay,disappear,NULL);
 		CCSprite *body=CCSprite::create("p5.png");
 		body->setPosition(ccp(earthSnake->snakeBody[i]->row*32+16,earthSnake->snakeBody[i]->col*32+16));
-		bg->addChild(body,1);
+		tileMap->addChild(body,1);
 		body->runAction(disBody);
 	} 
 }
@@ -642,9 +654,9 @@ void Game::restart()
 
 	count1 = 0;
 	count2 = 0;
-	marsSnake->getMarsSnakeScores().setMarsSnakeEatScores(0);
-	earthSnake->getEarthSnakeScores().setEarthSnakeEatScores(0);
-
+	marsSnake->getMarsSnakeScores().setMarsSnakeEatScores(count1);
+	earthSnake->getEarthSnakeScores().setEarthSnakeEatScores(count2);
+	//GameScore = 0;
 }
 
 bool Game::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent)
@@ -674,8 +686,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 			{
 				//this->unscheduleAllSelectors();
 				direction = RIGHT;
-				//this->schedule(schedule_selector(Game::gameLogic1),speed);
-				//this->schedule(schedule_selector(Game::gameLogic2),speed);
+				//this->schedule(schedule_selector(Game::gameLogic),speed);
 			}
 		}
 		else
@@ -684,8 +695,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 			{
 				//this->unscheduleAllSelectors();
 				direction = LEFT;
-				//this->schedule(schedule_selector(Game::gameLogic1),speed);
-				//this->schedule(schedule_selector(Game::gameLogic2),speed);
+				//this->schedule(schedule_selector(Game::gameLogic),speed);
 			}
 		}
 	}
@@ -698,8 +708,7 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 				//方向切换会闪是因为这个原因
 				//this->unscheduleAllSelectors();
 				direction = UP;
-				//this->schedule(schedule_selector(Game::gameLogic1),speed);
-				//this->schedule(schedule_selector(Game::gameLogic2),speed);
+				//this->schedule(schedule_selector(Game::gameLogic),speed);
 			}
 		}
 		else
@@ -708,11 +717,9 @@ void Game::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent)
 			{
 				//this->unscheduleAllSelectors();
 				direction = DOWN;
-				//this->schedule(schedule_selector(Game::gameLogic1),speed);
-				//this->schedule(schedule_selector(Game::gameLogic2),speed);
+				//this->schedule(schedule_selector(Game::gameLogic),speed);
 			}
 		}
-		//this->schedule(schedule_selector(Game::gameLogic2),0.3);
 	}
 
 	return;
@@ -723,6 +730,24 @@ void Game::setMarsSnakeScores(Score scores)
 	MarsSnakeScores = scores;
 	char b[20];
 	label1->setString(itoa(MarsSnakeScores.getMarsSnakeEatScores(),b,10));
+
+	/*当然不会用这种方法啦
+	string content;
+	int a = MarsSnakeScores.getMarsSnakeEatScores();
+
+	if (a) 
+	{ 
+		for (; a; a /= 10)  
+			content.push_back('0' + a % 10);  
+		reverse(content.begin(), content.end());  
+	} 
+	else 
+	{ 
+		content.push_back('0'); 
+	}
+
+	label1->setString(content.c_str());
+	*/
 }
 
 void Game::setEarthSnakeScores(Score scores)
@@ -730,4 +755,19 @@ void Game::setEarthSnakeScores(Score scores)
 	EarthSnakeScores = scores;
 	char a[20];
 	label2->setString(itoa(EarthSnakeScores.getEarthSnakeEatScores(),a,10));
+}
+
+//当前项目是否存在存储的xml文件
+bool Game::isHaveSaveFile()
+{
+	if(!CCUserDefault::sharedUserDefault()->getBoolForKey("isHaveSaveFileXml")) 
+	{ 
+		CCUserDefault::sharedUserDefault()->setBoolForKey("isHaveSaveFileXml", true);
+		CCUserDefault::sharedUserDefault()->flush();//提交
+		//        CCLog("存储文件不存在,头次开始加载游戏");
+		return false;
+	}else{
+		//        CCLog("存储文件已存在");
+		return true;
+	}
 }

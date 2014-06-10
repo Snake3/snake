@@ -31,6 +31,16 @@ bool GameHelp::init()
 	labelHelp->setPosition(CCPoint(330,270)); 
 	this->addChild(labelHelp); 
 
+	/*//最高分纪录
+	char a[20];
+	int HighScores = CCUserDefault::sharedUserDefault()->getIntegerForKey("Hiscores");
+	string HighScoresText = itoa(HighScores,a,10);
+	string HST = "HighScores: " + HighScoresText;
+	auto labelHighScores = CCLabelTTF::create(HST.c_str(), "宋体", 24); 
+	labelHighScores->setColor(color);
+	labelHighScores->setPosition(CCPoint(330,240)); 
+	this->addChild(labelHighScores); */
+
 	//创建返回按钮
 	auto labelBack = CCLabelTTF::create("MainMenu", "宋体", 18); 
 	labelBack->setColor(color);
